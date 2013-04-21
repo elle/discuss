@@ -27,6 +27,8 @@ class SetupDiscuss < ActiveRecord::Migration
     create_table :discuss_users do |t|
       t.references :user, polymorphic: true
       t.string     :email
+      t.string     :first_name
+      t.string     :last_name
 
       t.timestamps
     end
