@@ -21,6 +21,7 @@ module Discuss
 
         assert message.valid?
         assert_equal 1, @teacher.sent_messages.count
+        assert_equal 1, Message.sent(@teacher).count
       end
 
       it 'allows multipule recipients' do
@@ -29,15 +30,17 @@ module Discuss
         assert_equal 1, Message.count
         assert_equal 2, message.recipients.count
         assert_equal 1, @student1.received_messages.count
-        assert_equal 1, @student2.received_messages.count
+        assert_equal 1, Message.inbox(@student2).count
       end
 
       context 'when draft' do
         it 'when no recipients saves message as draft' do
           message = @teacher.sent_messages.create!(body: 'lorem ipsum')
 
-          assert_equal 0, message.recipients.count
+          assert message.draft?
           assert_equal 0, MessageUser.count
+          assert_equal 0, @teacher.sent_messages.count
+          assert_equal 1, Message.drafts(@teacher).count
         end
 
         it 'should not deliver the message' do
