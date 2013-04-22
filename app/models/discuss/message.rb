@@ -8,22 +8,29 @@ module Discuss
 
     validates :body, :sender_id, presence: true
 
-    scope :draft,   -> { where(draft: true) }
-    scope :trashed, -> { where(draft: true) }
-    scope :deleted, -> { where(draft: true) }
+    scope :ordered,     -> { order('created_at asc') }
+    scope :draft,       -> { where(draft:   true) }
+    scope :trashed,     -> { where(trashed: true) }
+    scope :deleted,     -> { where(deleted: true) }
+    scope :not_draft,   -> { where(draft:   false) }
+    scope :not_trashed, -> { where(trashed: false) }
+    scope :not_deleted, -> { where(deleted: false) }
 
-    scope :inbox, lambda { |user| joins(:message_users).where('message_users.discuss_user_id =?', user.id) }
-    scope :sent,  lambda { |user| where(sender_id: user.id) }
-    scope :trash, lambda { |user| where(sender_id: user.id) }
+    scope :active,  -> { not_draft.not_trashed.not_deleted }
+
+    scope :inbox,  lambda { |user| joins(:message_users).where('message_users.discuss_user_id = ?', user.id) }
+    scope :sent,   lambda { |user| active.where(sender_id: user.id) }
+    scope :trash,  lambda { |user| trashed.where(sender_id: user.id) }
+    scope :drafts, lambda { |user| draft.not_trashed.not_deleted.where(sender_id: user.id) }
 
     before_save :set_draft
 
-    def self.drafts(user)
-      Message.sent(user).draft
-    end
-
     def delete
       update(deleted: true)
+    end
+
+    def active?
+      Message.active.include?(self)
     end
 
     private

@@ -24,7 +24,7 @@ module Discuss
         assert_equal 1, Message.sent(@teacher).count
       end
 
-      it 'allows multipule recipients' do
+      it 'allows multiple recipients' do
         message = @teacher.sent_messages.create!(body: 'abc', recipients: [@student1, @student2])
 
         assert_equal 1, Message.count
@@ -48,6 +48,35 @@ module Discuss
 
           assert message.draft?
           assert_equal 0, @student1.received_messages.count
+        end
+      end
+
+      context 'when trashed' do
+        context 'when sent messages' do
+          before { @message = @teacher.sent_messages.create!(body: 'abc', recipients: [@student1], trashed: true) }
+
+          it 'should be included in #trash scope' do
+            assert_equal 1, Message.trash(@teacher).count
+          end
+
+          it 'should not be inlucded in #sent scope' do
+            assert_equal 0, Message.sent(@teacher).count
+          end
+
+          it 'should not be included in #draft scope' do
+            @message.update(draft: true)
+            assert @message.draft?
+            assert @message.trashed?
+            assert_equal 0, Message.drafts(@teacher).count
+          end
+
+          it 'should still appear on the recipient side' do
+            assert_equal 1, Message.inbox(@student1).count
+          end
+        end
+
+        context 'when received messages' do
+          it 'should not be included in #inbox scope'
         end
       end
     end
