@@ -1,9 +1,9 @@
 module Discuss
   class Message < ActiveRecord::Base
-    self.table_name = "messages"
+    self.table_name = 'messages'
 
-    has_many :recipients, class_name: "Discuss::Recipient"
-    has_many :discuss_users, class_name: "Discuss::DiscussUser", through: :recipients
+    has_many :message_users
+    has_many :recipients, through: :message_users, source: :discuss_user
 
     validates :body, presence: true
   end

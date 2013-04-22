@@ -15,14 +15,14 @@ class SetupDiscuss < ActiveRecord::Migration
     end
     add_index :messages, :discuss_user_id
 
-    create_table :recipients do |t|
+    create_table :message_users do |t|
       t.references :message
       t.references :discuss_user
 
       t.timestamps
     end
-    add_index :recipients, :message_id
-    add_index :recipients, :discuss_user_id
+    add_index :message_users, :message_id
+    add_index :message_users, :discuss_user_id
 
     create_table :discuss_users do |t|
       t.references :user, polymorphic: true

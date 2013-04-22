@@ -17,11 +17,23 @@ ActiveRecord::Schema.define(version: 20130419055252) do
     t.integer  "user_id"
     t.string   "user_type"
     t.string   "email"
+    t.string   "first_name"
+    t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "discuss_users", ["user_id", "user_type"], name: "index_discuss_users_on_user_id_and_user_type"
+
+  create_table "message_users", force: true do |t|
+    t.integer  "message_id"
+    t.integer  "discuss_user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "message_users", ["discuss_user_id"], name: "index_message_users_on_discuss_user_id"
+  add_index "message_users", ["message_id"], name: "index_message_users_on_message_id"
 
   create_table "messages", force: true do |t|
     t.string   "subject"
@@ -37,15 +49,5 @@ ActiveRecord::Schema.define(version: 20130419055252) do
   end
 
   add_index "messages", ["discuss_user_id"], name: "index_messages_on_discuss_user_id"
-
-  create_table "recipients", force: true do |t|
-    t.integer  "message_id"
-    t.integer  "discuss_user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "recipients", ["discuss_user_id"], name: "index_recipients_on_discuss_user_id"
-  add_index "recipients", ["message_id"], name: "index_recipients_on_message_id"
 
 end
