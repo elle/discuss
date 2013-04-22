@@ -6,10 +6,9 @@ class SetupDiscuss < ActiveRecord::Migration
       t.text        :body
       t.integer     :sender_id
       t.integer     :parent_id
-      t.boolean     :draft,     default: false
-      t.boolean     :trashed,   default: false
-      t.boolean     :deleted,   default: false
-      t.datetime    :read_at
+      t.boolean     :draft,      default: false
+      t.datetime    :trashed_at
+      t.datetime    :deleted_at
 
       t.timestamps
     end
@@ -18,6 +17,9 @@ class SetupDiscuss < ActiveRecord::Migration
     create_table :message_users do |t|
       t.references :message
       t.references :discuss_user
+      t.datetime   :trashed_at
+      t.datetime   :deleted_at
+      t.datetime   :read_at
 
       t.timestamps
     end

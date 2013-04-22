@@ -53,7 +53,7 @@ module Discuss
 
       context 'when trashed' do
         context 'when sent messages' do
-          before { @message = @teacher.sent_messages.create!(body: 'abc', recipients: [@student1], trashed: true) }
+          before { @message = @teacher.sent_messages.create!(body: 'abc', recipients: [@student1], trashed_at: Time.now) }
 
           it 'should be included in #trash scope' do
             assert_equal 1, Message.trash(@teacher).count

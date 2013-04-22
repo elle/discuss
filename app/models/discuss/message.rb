@@ -9,12 +9,15 @@ module Discuss
     validates :body, :sender_id, presence: true
 
     scope :ordered,     -> { order('created_at asc') }
-    scope :draft,       -> { where(draft:   true) }
-    scope :trashed,     -> { where(trashed: true) }
-    scope :deleted,     -> { where(deleted: true) }
-    scope :not_draft,   -> { where(draft:   false) }
-    scope :not_trashed, -> { where(trashed: false) }
-    scope :not_deleted, -> { where(deleted: false) }
+
+    scope :draft,       -> { where(draft: true) }
+    scope :not_draft,   -> { where(draft: false) }
+
+    scope :trashed,     -> { where('trashed_at is not NULL') }
+    scope :not_trashed, -> { where('trashed_at is NULL') }
+
+    scope :deleted,     -> { where('deleted_at is not NULL') }
+    scope :not_deleted, -> { where('deleted_at is NULL') }
 
     scope :active,  -> { not_draft.not_trashed.not_deleted }
 
@@ -26,11 +29,19 @@ module Discuss
     before_save :set_draft
 
     def delete
-      update(deleted: true)
+      update(deleted_at: Time.now)
     end
 
     def active?
       Message.active.include?(self)
+    end
+
+    def trashed?
+      trashed_at.present?
+    end
+
+    def deleted?
+      deleted_at.present?
     end
 
     private
