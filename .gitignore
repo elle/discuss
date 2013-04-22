@@ -1,5 +1,7 @@
 .bundle/
 log/*.log
+.DS_Store
+.*.sw?
 pkg/
 test/dummy/db/*.sqlite3
 test/dummy/db/*.sqlite3-journal
