@@ -14,3 +14,15 @@ Rails.backtrace_cleaner.remove_silencers!
 
 # Load support files
 Dir['#{File.dirname(__FILE__)}/support/**/*.rb'].each { |f| require f }
+
+require 'database_cleaner'
+DatabaseCleaner.strategy = :truncation
+
+class MiniTest::Spec
+  before(:each) { DatabaseCleaner.start }
+  after(:each) { DatabaseCleaner.clean }
+
+  class << self
+    alias context describe
+  end
+end
