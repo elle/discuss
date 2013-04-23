@@ -9,16 +9,23 @@ module Discuss
       @messages = Message.send(params[:mailbox], user)
     end
 
-    def show
-    end
-
     def create
+      @message = user.sent_messages.new(message_params)
+      if @message.save
+        redirect_to mailbox_path(:inbox), notice: 'Yay! Message sent'
+      else
+        render :new
+      end
     end
 
     def update
+      message.update(message_params)
+      redirect_to mailbox_path(:inbox)
     end
 
     def destroy
+      message.delete! # [e] This is not accurate, it needs to handle if message is sent or received here
+      redirect_to mailbox_path(:inbox), notice: 'Message deleted'
     end
 
 
@@ -34,7 +41,7 @@ module Discuss
     helper_method :message
 
     def check_mailbox_params
-      redirect_to 'messages/inbox' unless valid_mailbox?
+      redirect_to mailbox_path(:inbox) unless valid_mailbox?
     end
 
     def valid_mailbox?
@@ -45,5 +52,9 @@ module Discuss
       params[:mailbox]
     end
     helper_method :mailbox_name
+
+    def message_params
+      params.require(:message).permit(:subject, :body, :parent_id, :recipients)
+    end
   end
 end
