@@ -1,6 +1,5 @@
 Discuss::Engine.routes.draw do
 
-  get "messages/inbox"
-  get "messages/sent"
-  get "messages/trash"
+  get 'messages/:mailbox', to: 'messages#index'
+  resources :messages
 end
