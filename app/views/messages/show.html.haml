@@ -1,0 +1,13 @@
+%h2 Message
+
+%ul
+  %li Subject: #{message.try(:subject)}
+  %li Sender: #{message.sender}
+  %li Date: #{message.created_at}
+  %li Recipients #{message.recipients.collect(&:name)}
+
+.body= message.body
+
+%h3 Reply
+= render 'form'
+
