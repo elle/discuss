@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails',         '~> 4.0.0.beta1'
   s.add_dependency 'haml',          '~> 4.0.2'
+  s.add_dependency 'simple_form',   '~> 1.4.1'
 
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'debugger'
