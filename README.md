@@ -17,7 +17,20 @@ User.find(Batman.id).sent_messages
 
 If no recipients are entered, the message will be saved as draft.
 
-If Batman decided that he wants to save his message as a draft, no join record will be created
 
+## Current User
+
+The gem uses a current_user helper method that is usally provided with most authentocation systems.
+If you wish to use your own class, override our `current_discuss_user` method to use your own class.
+
+```
+  class ApplicationController < ActionController::Base
+
+    private
+    def current_discuss_user
+      current_user
+    end
+  end
+```
 
 This project rocks and uses MIT-LICENSE.
