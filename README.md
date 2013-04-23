@@ -63,4 +63,10 @@ If you wish to use your own class, override our `current_discuss_user` method to
   end
 ```
 
+## TODO
+
+* Markdown styling for message body
+* Conversation
+* Mailers
+
 This project rocks and uses MIT-LICENSE.
