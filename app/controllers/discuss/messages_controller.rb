@@ -6,6 +6,7 @@ module Discuss
     before_action :message, only: [:show, :update, :destroy]
 
     def index
+      debugger
       @messages = Message.send(params[:mailbox], user)
     end
 
@@ -27,7 +28,6 @@ module Discuss
       message.delete! # [e] This is not accurate, it needs to handle if message is sent or received here
       redirect_to mailbox_path(:inbox), notice: 'Message deleted'
     end
-
 
     private
     def user

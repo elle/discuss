@@ -1,7 +1,12 @@
 require 'test_helper'
 
-module Discuss
-  class WorkflowTest < MiniTest::Spec
+class WorkFlowTest < FeatureTest
 
+  before(:each) do
   end
+
+  it "seeing an empty inbox" do
+    visit "/discuss/messages/inbox" # discuss.mailbox_path(:inbox)
+  end
+
 end
