@@ -6,7 +6,6 @@ module Discuss
     before_action :message, only: [:show, :update, :destroy]
 
     def index
-      debugger
       @messages = Message.send(params[:mailbox], user)
     end
 
