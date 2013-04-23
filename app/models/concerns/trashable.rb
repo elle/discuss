@@ -11,6 +11,14 @@ module Trashable
     scope :active,  -> { not_draft.not_trashed.not_deleted }
   end
 
+  def trash!
+    update(trashed_at: Time.now)
+  end
+
+  def delete!
+    update(deleted_at: Time.now)
+  end
+
   def active?
     Message.active.include?(self)
   end

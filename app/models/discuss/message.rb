@@ -17,13 +17,15 @@ module Discuss
 
     scope :inbox,  lambda { |user| joins(:message_users).where('message_users.discuss_user_id = ?', user.id) }
     scope :sent,   lambda { |user| active.where(sender_id: user.id) }
-    scope :trash,  lambda { |user| trashed.where(sender_id: user.id) }
     scope :drafts, lambda { |user| draft.not_trashed.not_deleted.where(sender_id: user.id) }
+
+    scope :trashed_sent,     lambda { |user| trashed.where(sender_id: user.id) }
+    scope :trashed_received, lambda { |user| joins(:message_users).where('message_users.trashed_at is not NULL and message_users.discuss_user_id = ?', user.id) }
 
     before_save :set_draft
 
-    def delete
-      update(deleted_at: Time.now)
+    def self.trash user
+      Message.trashed_sent(user) + Message.trashed_received(user)
     end
 
     private
