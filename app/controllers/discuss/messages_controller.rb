@@ -53,7 +53,7 @@ module Discuss
     helper_method :mailbox_name
 
     def message_params
-      params.require(:message).permit(:subject, :body, :parent_id, :recipients)
+      params.require(:message).permit(:subject, :body, :parent_id, recipient_ids: [])
     end
   end
 end
