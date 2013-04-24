@@ -1,9 +1,0 @@
-= simple_form_for user.sent_messages.new do |f|
-  - if message
-    = f.hidden_field :parent_id, value: message.id
-
-  = f.association :recipients
-  = f.input :subject
-  = f.input :body
-
-  = f.submit 'Send message'

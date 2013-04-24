@@ -1,0 +1,9 @@
+%h2= mailbox_name.humanize
+
+= pluralize(@messages.size, "message")
+
+- if @messages.any?
+  %ul
+    - @messages.each do |message|
+      %li[message]
+        = message.inspect
