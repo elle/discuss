@@ -6,4 +6,4 @@
   %ul
     - @messages.each do |message|
       %li[message]
-        = message.inspect
+        = link_to message.try(:subject), message
