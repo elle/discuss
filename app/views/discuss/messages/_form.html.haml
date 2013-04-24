@@ -1,6 +1,6 @@
 = simple_form_for user.sent_messages.new do |f|
 
-  -# if message.nil?
+  -# if message
     =# f.hidden_field :parent_id, value: message.id
 
   = f.association :recipients, collection: Discuss::DiscussUser.all.reject{|u| u == user }
