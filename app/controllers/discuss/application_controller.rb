@@ -1,5 +1,5 @@
 module Discuss
-  class ApplicationController < ActionController::Base
+  class ApplicationController < ::ApplicationController
     before_action :current_discuss_user
 
     private
