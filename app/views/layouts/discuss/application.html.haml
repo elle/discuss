@@ -7,10 +7,4 @@
     = csrf_meta_tags
 
   %body
-    %nav.discuss_nav
-      %ul
-        %li= link_to "Inbox", mailbox_path(:inbox)
-        %li= link_to "Sent", mailbox_path(:sent)
-        %li= link_to "Trash", mailbox_path(:trash)
-
     = yield
