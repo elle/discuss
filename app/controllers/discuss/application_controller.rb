@@ -1,7 +1,6 @@
 module Discuss
-  class ApplicationController < ActionController::Base
-    before_action :current_user
-
+  class ApplicationController < ::ApplicationController
+    before_action :current_discuss_user
 
     private
     def current_discuss_user

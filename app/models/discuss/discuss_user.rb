@@ -7,5 +7,9 @@ module Discuss
     has_many :sent_messages, -> { where(draft: false) }, class_name: 'Message', foreign_key: :sender_id
 
     validates :email, :user_id, presence: true
+
+    def to_s
+      "#{name} <#{email}>"
+    end
   end
 end
