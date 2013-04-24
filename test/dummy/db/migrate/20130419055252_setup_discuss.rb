@@ -14,7 +14,7 @@ class SetupDiscuss < ActiveRecord::Migration
     end
     add_index :messages, :sender_id
 
-    create_table :message_users do |t|
+    create_table :message_recipients do |t|
       t.references :message
       t.references :discuss_user
       t.datetime   :trashed_at
@@ -23,8 +23,8 @@ class SetupDiscuss < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :message_users, :message_id
-    add_index :message_users, :discuss_user_id
+    add_index :message_recipients, :message_id
+    add_index :message_recipients, :discuss_user_id
 
     create_table :discuss_users do |t|
       t.references :user, polymorphic: true, default: 'User'

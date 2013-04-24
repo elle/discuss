@@ -1,6 +1,6 @@
 module Discuss
-  class MessageUser < ActiveRecord::Base
-    self.table_name = 'message_users'
+  class MessageRecipient < ActiveRecord::Base
+    self.table_name = 'message_recipients'
 
     include Trashable
 

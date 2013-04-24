@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module Discuss
-  class MessageUserTest < MiniTest::Spec
+  class MessageRecipientTest < MiniTest::Spec
     before(:each) do
       @teacher  = DiscussUser.create!(email: 'admin@admin.com', user_type: 'teacher', user_id: 4)
       @student = DiscussUser.create!(email: 'student@student.com', user_type: 'student', user_id: 1)
@@ -11,7 +11,7 @@ module Discuss
       context 'when received message is trashed' do
         before do
           @teacher.sent_messages.create!(body: 'abc', recipients: [@student])
-          @received = MessageUser.last
+          @received = MessageRecipient.last
           @message = @received.message
           @received.trash!
         end

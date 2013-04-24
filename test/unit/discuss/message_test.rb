@@ -37,7 +37,7 @@ module Discuss
           message = @teacher.sent_messages.create!(body: 'lorem ipsum')
 
           assert message.draft?
-          assert_equal 0, MessageUser.count
+          assert_equal 0, MessageRecipient.count
           assert_equal 0, @teacher.sent_messages.count
           assert_equal 1, Message.drafts(@teacher).count
         end
@@ -50,29 +50,46 @@ module Discuss
         end
       end
 
-      context 'when trashed' do
-        context 'when sent messages' do
-          before(:each) { @message = @teacher.sent_messages.create!(body: 'abc', recipients: [@student1], trashed_at: Time.now) }
+      context 'when trashed sent message' do
+        before(:each) { @message = @teacher.sent_messages.create!(body: 'abc', recipients: [@student1], trashed_at: Time.now) }
 
-          it 'should be included in #trash scope' do
-            assert_equal 1, Message.trash(@teacher).count
-          end
-
-          it 'should not be inlucded in #sent scope' do
-            assert_equal 0, Message.sent(@teacher).count
-          end
-
-          it 'should not be included in #draft scope' do
-            @message.update(draft: true)
-            assert @message.draft?
-            assert @message.trashed?
-            assert_equal 0, Message.drafts(@teacher).count
-          end
-
-          it 'should still appear on the recipient side' do
-            assert_equal 1, Message.inbox(@student1).count
-          end
+        it 'should be included in #trash scope' do
+          assert_equal 1, Message.trash(@teacher).count
         end
+
+        it 'should not be inlucded in #sent scope' do
+          assert_equal 0, Message.sent(@teacher).count
+        end
+
+        it 'should not be included in #draft scope' do
+          @message.update(draft: true)
+          assert @message.draft?
+          assert @message.trashed?
+          assert_equal 0, Message.drafts(@teacher).count
+        end
+
+        it 'should still appear on the recipient side' do
+          assert_equal 1, Message.inbox(@student1).count
+        end
+      end
+
+      context 'message actions' do
+        before { @message = @teacher.sent_messages.create(body: 'lorem ipsum', recipients: [@student1]) }
+
+        it '#draft!' do
+          refute @message.draft?
+          @message.draft!
+          assert @message.draft?
+        end
+
+        it '#trash!'
+
+        it '#delete!'
+        it '#read!'
+        it '#emoty_trash!'
+      end
+
+      context 'conversation' do
       end
     end
   end
