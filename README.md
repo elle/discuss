@@ -27,7 +27,7 @@ add the gem to your Gemfile.
 get the migrations
 
 ```
-  rake discuss:migrations:install
+  rake discuss:install:migrations
 ```
 
 ## Api
