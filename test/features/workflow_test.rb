@@ -12,12 +12,12 @@ def current_user
 end
 
 class WorkFlowTest < FeatureTest
-  before(:each) do
-    @disscuss_user = Discuss::DiscussUser.create(user_id: 1, email: "test@test.com", name: "tester")
-  end
+  before { @u = Discuss::DiscussUser.create(user_id: 1, email: "test@test.com", name: "tester") }
 
-  it "seeing an empty inbox" do
-    visit "/discuss/messages/inbox" # discuss.mailbox_path(:inbox)
+  it 'seeing an empty inbox' do
+    visit "/discuss/mailbox/inbox" # discuss.mailbox_path(:inbox)
+    assert page.has_content?('Inbox')
+    assert page.has_content?('0 messages')
   end
 end
 
