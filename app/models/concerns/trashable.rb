@@ -12,11 +12,11 @@ module Trashable
   end
 
   def trash!
-    update(trashed_at: Time.now)
+    update(trashed_at: Time.zone.now)
   end
 
   def delete!
-    update(deleted_at: Time.now)
+    update(deleted_at: Time.zone.now)
   end
 
   def active?
