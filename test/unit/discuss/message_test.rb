@@ -15,21 +15,33 @@ module Discuss
         @student2 = DiscussUser.create!(email: 'ss@ss.com', user_type: 'student', user_id: 2)
       end
 
-      it 'sends a message by calling #send!' do
-        message = @teacher.messages.new(body: 'abc', recipients: [@student1])
-        message.send!
-        assert_equal 1, @teacher.sent_messages.count
-        assert_equal 1, Message.sent(@teacher).count
-      end
+      context 'sending a message' do
+        before do
+          @message = @teacher.messages.new(body: 'abc', recipients: [@student1, @student2])
+          @message.send!
+        end
 
-      it 'allows multiple recipients' do
-        message = @teacher.messages.new(body: 'abc', recipients: [@student1, @student2])
-        message.send!
+        it 'sends a message by calling #send!' do
+          assert_equal 1, @teacher.sent_messages.count
+          assert_equal 1, Message.sent(@teacher).count
+        end
 
-        assert_equal 1, Message.count
-        assert_equal 2, message.recipients.count
-        assert_equal 1, @student1.received_messages.count
-        assert_equal 1, Message.inbox(@student2).count
+        it 'allows multiple recipients' do
+          assert_equal 2, @message.recipients.count
+          assert_equal 1, @student1.received_messages.count
+          assert_equal 1, Message.inbox(@student2).count
+        end
+
+        it 'sets #sent_at' do
+          assert @message.sent?
+        end
+
+        it 'cannot go back to being a draft once sent' do
+          @message.draft = true
+          @message.save!
+          @message.reload
+          refute @message.draft?
+        end
       end
 
       context 'when draft' do
@@ -46,14 +58,24 @@ module Discuss
           message = @teacher.messages.create!(body: 'lorem ipsum', recipients: [@student1])
 
           assert message.draft?
+          assert message.unsent?
           assert_equal 0, @student1.received_messages.count
+        end
+
+        it 'when trashed, should not longer be included in #draft scope' do
+          message = @teacher.messages.create!(body: 'lorem ipsum', recipients: [@student1])
+          message.trash!
+
+          assert message.trashed?
+          assert_equal 0, Message.drafts(@teacher).count
         end
       end
 
       context 'when trashed sent message' do
         before(:each) do
-          @message = @teacher.messages.new(body: 'abc', recipients: [@student1], trashed_at: Time.now)
+          @message = @teacher.messages.new(body: 'abc', recipients: [@student1])
           @message.send!
+          @message.trash!
         end
 
         it 'should be included in #trash scope' do
@@ -62,13 +84,6 @@ module Discuss
 
         it 'should not be inlucded in #sent scope' do
           assert_equal 0, Message.sent(@teacher).count
-        end
-
-        it 'should not be included in #draft scope' do
-          @message.update(draft: true)
-          assert @message.draft?
-          assert @message.trashed?
-          assert_equal 0, Message.drafts(@teacher).count
         end
 
         it 'should still appear on the recipient side' do

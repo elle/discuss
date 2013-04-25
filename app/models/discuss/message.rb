@@ -28,15 +28,24 @@ module Discuss
       Message.trashed_sent(user) + Message.trashed_received(user)
     end
 
+    def sent?
+      sent_at.present?
+    end
+
+    def unsent?
+      !sent?
+    end
+
     def send!
-      self.draft = false
+      self.attributes = { draft: false, sent_at: Time.now }
       save
     end
 
     private
     # draft is true by default. so, this is just a safeguard in case there are no recipients
     def set_draft
-      self.draft = true unless recipients.any?
+      self.draft = (unsent? || recipients.empty?)
+      true
     end
   end
 end
