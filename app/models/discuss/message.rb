@@ -19,8 +19,13 @@ module Discuss
     scope :sent,   lambda { |user| active.where(sender_id: user.id) }
     scope :drafts, lambda { |user| draft.not_trashed.not_deleted.where(sender_id: user.id) }
 
+    scope :read,   lambda { |user| joins(:message_recipients).where('message_recipients.read_at is not NULL and
+                                                                     message_recipients.discuss_user_id = ?', user.id) }
+
     scope :trashed_sent,     lambda { |user| trashed.where(sender_id: user.id) }
-    scope :trashed_received, lambda { |user| joins(:message_recipients).where('message_recipients.trashed_at is not NULL and message_recipients.discuss_user_id = ?', user.id) }
+    scope :trashed_received, lambda { |user| joins(:message_recipients).where('message_recipients.trashed_at is not NULL and
+                                                                               message_recipients.deleted_at is NULL and
+                                                                               message_recipients.discuss_user_id = ?', user.id) }
 
     before_save :set_draft
 
