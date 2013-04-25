@@ -37,7 +37,7 @@ module Discuss
         end
 
         it 'cannot go back to being a draft once sent' do
-          @message.draft = true
+          @message.sent_at = Time.now
           @message.save!
           @message.reload
           refute @message.draft?
