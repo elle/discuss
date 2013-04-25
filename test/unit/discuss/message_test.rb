@@ -15,43 +15,68 @@ module Discuss
         @student2 = DiscussUser.create!(email: 'ss@ss.com', user_type: 'student', user_id: 2)
       end
 
-      it 'sends a message by calling ::create' do
-        message = @teacher.sent_messages.create!(body: 'abc', recipients: [@student1])
+      context 'sending a message' do
+        before do
+          @message = @teacher.messages.new(body: 'abc', recipients: [@student1, @student2])
+          @message.send!
+        end
 
-        assert message.valid?
-        assert_equal 1, @teacher.sent_messages.count
-        assert_equal 1, Message.sent(@teacher).count
-      end
+        it 'sends a message by calling #send!' do
+          assert_equal 1, @teacher.sent_messages.count
+          assert_equal 1, Message.sent(@teacher).count
+        end
 
-      it 'allows multiple recipients' do
-        message = @teacher.sent_messages.create!(body: 'abc', recipients: [@student1, @student2])
+        it 'allows multiple recipients' do
+          assert_equal 2, @message.recipients.count
+          assert_equal 1, @student1.received_messages.count
+          assert_equal 1, Message.inbox(@student2).count
+        end
 
-        assert_equal 1, Message.count
-        assert_equal 2, message.recipients.count
-        assert_equal 1, @student1.received_messages.count
-        assert_equal 1, Message.inbox(@student2).count
+        it 'sets #sent_at' do
+          assert @message.sent?
+        end
+
+        it 'cannot go back to being a draft once sent' do
+          @message.sent_at = Time.now
+          @message.save!
+          @message.reload
+          refute @message.draft?
+        end
       end
 
       context 'when draft' do
         it 'when no recipients saves message as draft' do
-          message = @teacher.sent_messages.create!(body: 'lorem ipsum')
+          message = @teacher.messages.create!(body: 'lorem ipsum')
 
-          assert message.draft?
-          assert_equal 0, MessageRecipient.count
+          assert message.recipients.empty?
           assert_equal 0, @teacher.sent_messages.count
+          assert_equal 1, @teacher.draft_messages.count
           assert_equal 1, Message.drafts(@teacher).count
         end
 
         it 'should not deliver the message' do
-          message = @teacher.sent_messages.create!(body: 'lorem ipsum', recipients: [@student1], draft: true)
+          message = @teacher.messages.create!(body: 'lorem ipsum', recipients: [@student1])
 
           assert message.draft?
+          assert message.unsent?
           assert_equal 0, @student1.received_messages.count
+        end
+
+        it 'when trashed, should not longer be included in #draft scope' do
+          message = @teacher.messages.create!(body: 'lorem ipsum', recipients: [@student1])
+          message.trash!
+
+          assert message.trashed?
+          assert_equal 0, Message.drafts(@teacher).count
         end
       end
 
       context 'when trashed sent message' do
-        before(:each) { @message = @teacher.sent_messages.create!(body: 'abc', recipients: [@student1], trashed_at: Time.now) }
+        before(:each) do
+          @message = @teacher.messages.new(body: 'abc', recipients: [@student1])
+          @message.send!
+          @message.trash!
+        end
 
         it 'should be included in #trash scope' do
           assert_equal 1, Message.trash(@teacher).count
@@ -61,35 +86,9 @@ module Discuss
           assert_equal 0, Message.sent(@teacher).count
         end
 
-        it 'should not be included in #draft scope' do
-          @message.update(draft: true)
-          assert @message.draft?
-          assert @message.trashed?
-          assert_equal 0, Message.drafts(@teacher).count
-        end
-
         it 'should still appear on the recipient side' do
           assert_equal 1, Message.inbox(@student1).count
         end
-      end
-
-      context 'message actions' do
-        before { @message = @teacher.sent_messages.create(body: 'lorem ipsum', recipients: [@student1]) }
-
-        it '#draft!' do
-          refute @message.draft?
-          @message.draft!
-          assert @message.draft?
-        end
-
-        it '#trash!'
-
-        it '#delete!'
-        it '#read!'
-        it '#emoty_trash!'
-      end
-
-      context 'conversation' do
       end
     end
   end
