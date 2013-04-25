@@ -13,5 +13,6 @@ gemspec
 # To use debugger
 # gem 'debugger'
 group :test do
+  gem 'haml'
   gem 'database_cleaner', git: 'https://github.com/bmabey/database_cleaner.git', tag: 'v1.0.0.RC1'
 end
