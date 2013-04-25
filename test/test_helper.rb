@@ -34,4 +34,3 @@ class FeatureTest < MiniTest::Spec
   include Capybara::DSL # to get capybara working
 end
 
-require "mocha/setup"
