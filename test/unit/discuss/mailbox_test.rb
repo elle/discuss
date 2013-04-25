@@ -4,7 +4,7 @@ module Discuss
   class MailboxTest < MiniTest::Spec
     before do
       @sender = DiscussUser.create(email: 'fred@flintstones.com', name: 'fred', user_id: 1)
-      @recipient = DiscussUser.create(email: 'barney@rubble.com', name: 'barney', user_id: 1)
+      @recipient = DiscussUser.create(email: 'barney@rubble.com', name: 'barney', user_id: 2)
       @message = @sender.messages.new(body: 'lorem ipsum', recipients: [@recipient])
       @message.send!
     end
@@ -26,6 +26,14 @@ module Discuss
         @mailbox.trash!
         @mailbox.delete!
         assert @message.deleted?
+      end
+
+      it '#empty_trash!' do
+        @mailbox.trash!
+        assert_includes Message.trash(@sender), @message
+
+        @mailbox.empty_trash!
+        refute_includes Message.trash(@sender), @message
       end
 
       it 'deletes a draft'
@@ -56,10 +64,14 @@ module Discuss
         @mailbox.read!
         assert_includes Message.read(@recipient), @message
       end
-    end
 
-    context 'when there is trash' do
-      it '#empty_trash!'
+      it '#empty_trash!' do
+        @mailbox.trash!
+        assert_includes Message.trash(@recipient), @message
+
+        @mailbox.empty_trash!
+        refute_includes Message.trash(@recipient), @message
+      end
     end
 
     context 'conversation' do

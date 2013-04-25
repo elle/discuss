@@ -22,7 +22,7 @@ module Discuss
     scope :read,   lambda { |user| joins(:message_recipients).where('message_recipients.read_at is not NULL and
                                                                      message_recipients.discuss_user_id = ?', user.id) }
 
-    scope :trashed_sent,     lambda { |user| trashed.where(sender_id: user.id) }
+    scope :trashed_sent,     lambda { |user| trashed.not_deleted.where(sender_id: user.id) }
     scope :trashed_received, lambda { |user| joins(:message_recipients).where('message_recipients.trashed_at is not NULL and
                                                                                message_recipients.deleted_at is NULL and
                                                                                message_recipients.discuss_user_id = ?', user.id) }
@@ -30,7 +30,7 @@ module Discuss
     before_save :set_draft
 
     def self.trash user
-      Message.trashed_sent(user) + Message.trashed_received(user)
+      Message.trashed_sent(user).readonly(false) + Message.trashed_received(user).readonly(false)
     end
 
     def sent?

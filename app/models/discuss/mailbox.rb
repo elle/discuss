@@ -37,5 +37,9 @@ module Discuss
     def read!
       recieved_message.read! if recipient?
     end
+
+    def empty_trash!
+      Message.trash(user).each { |m| Mailbox.new(m, user).delete! }
+    end
   end
 end
