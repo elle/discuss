@@ -28,11 +28,13 @@ module Discuss
       Message.trashed_sent(user) + Message.trashed_received(user)
     end
 
-    def draft!
-      update(draft: true)
+    def send!
+      self.draft = false
+      save
     end
 
     private
+    # draft is true by default. so, this is just a safeguard in case there are no recipients
     def set_draft
       self.draft = true unless recipients.any?
     end

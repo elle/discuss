@@ -6,7 +6,7 @@ class SetupDiscuss < ActiveRecord::Migration
       t.text        :body
       t.integer     :sender_id
       t.integer     :parent_id
-      t.boolean     :draft,      default: false
+      t.boolean     :draft,      default: true
       t.datetime    :trashed_at
       t.datetime    :deleted_at
 

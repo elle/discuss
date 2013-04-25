@@ -15,16 +15,16 @@ module Discuss
         @student2 = DiscussUser.create!(email: 'ss@ss.com', user_type: 'student', user_id: 2)
       end
 
-      it 'sends a message by calling ::create' do
-        message = @teacher.messages.create!(body: 'abc', recipients: [@student1])
-
-        assert message.valid?
+      it 'sends a message by calling #send!' do
+        message = @teacher.messages.new(body: 'abc', recipients: [@student1])
+        message.send!
         assert_equal 1, @teacher.sent_messages.count
         assert_equal 1, Message.sent(@teacher).count
       end
 
       it 'allows multiple recipients' do
-        message = @teacher.messages.create!(body: 'abc', recipients: [@student1, @student2])
+        message = @teacher.messages.new(body: 'abc', recipients: [@student1, @student2])
+        message.send!
 
         assert_equal 1, Message.count
         assert_equal 2, message.recipients.count
@@ -36,15 +36,14 @@ module Discuss
         it 'when no recipients saves message as draft' do
           message = @teacher.messages.create!(body: 'lorem ipsum')
 
-          assert message.draft?
-          assert_equal 0, MessageRecipient.count
+          assert message.recipients.empty?
           assert_equal 0, @teacher.sent_messages.count
           assert_equal 1, @teacher.draft_messages.count
           assert_equal 1, Message.drafts(@teacher).count
         end
 
         it 'should not deliver the message' do
-          message = @teacher.messages.create!(body: 'lorem ipsum', recipients: [@student1], draft: true)
+          message = @teacher.messages.create!(body: 'lorem ipsum', recipients: [@student1])
 
           assert message.draft?
           assert_equal 0, @student1.received_messages.count
@@ -52,7 +51,10 @@ module Discuss
       end
 
       context 'when trashed sent message' do
-        before(:each) { @message = @teacher.messages.create!(body: 'abc', recipients: [@student1], trashed_at: Time.now) }
+        before(:each) do
+          @message = @teacher.messages.new(body: 'abc', recipients: [@student1], trashed_at: Time.now)
+          @message.send!
+        end
 
         it 'should be included in #trash scope' do
           assert_equal 1, Message.trash(@teacher).count
@@ -71,16 +73,6 @@ module Discuss
 
         it 'should still appear on the recipient side' do
           assert_equal 1, Message.inbox(@student1).count
-        end
-      end
-
-      context 'message actions' do
-        before { @message = @teacher.messages.create(body: 'lorem ipsum', recipients: [@student1]) }
-
-        it '#draft!' do
-          refute @message.draft?
-          @message.draft!
-          assert @message.draft?
         end
       end
     end

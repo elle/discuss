@@ -10,9 +10,18 @@ module Discuss
     end
 
     def create
-      @message = user.sent_messages.new(message_params)
-      if @message.save
+      @message = user.messages.new(message_params)
+      if @message.send!
         redirect_to mailbox_path(:inbox), notice: 'Yay! Message sent'
+      else
+        render :new
+      end
+    end
+
+    def save_draft
+      @message = user.messages.new(message_params)
+      if @message.save
+        redirect_to mailbox_path(:inbox), notice: 'Message saved as draft'
       else
         render :new
       end
