@@ -35,8 +35,6 @@ module Discuss
         @mailbox.empty_trash!
         refute_includes Message.trash(@sender), @message
       end
-
-      it 'deletes a draft'
     end
 
     context 'recipient?' do
@@ -72,6 +70,22 @@ module Discuss
         @mailbox.empty_trash!
         refute_includes Message.trash(@recipient), @message
       end
+    end
+
+    # [e] need a cleanup
+    it 'deletes a draft' do
+      message1 = @sender.messages.create(body: 'lorem ipsum')
+      message2 = @sender.messages.create(body: 'lorem ipsum')
+      assert message1.draft?
+
+      Mailbox.new(message1, @sender).trash!
+      assert_includes Message.trash(@sender), message1
+
+      mb = Mailbox.new(message2, @sender)
+      mb.trash!
+      assert_equal 2, Message.trash(@sender).count
+      mb.empty_trash!
+      refute_includes Message.trash(@sender), message2
     end
 
     context 'conversation' do

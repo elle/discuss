@@ -1,6 +1,10 @@
 # [e] should really be a state machine,
 # but howto when message attributes is split between 2 models,
 # one for sent messages (Message) and one for received messages (MessageRecipient)
+#
+# Also, should be split into 2 classes:
+# 1. message actions
+# 2. mailbox, which should handle stuff like empty_trash! which really should not belong on a message instance
 
 module Discuss
   class Mailbox
