@@ -65,7 +65,7 @@ module Discuss
     def send!
       if draft_recipient_ids.any? && unsent?
         update_column(:sent_at, Time.zone.now)
-        update_column(:editable, false)
+        toggle(:editable)
         deliver!
       end
     end
