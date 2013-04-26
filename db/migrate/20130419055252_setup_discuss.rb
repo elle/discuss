@@ -4,7 +4,7 @@ class SetupDiscuss < ActiveRecord::Migration
     create_table :messages do |t|
       t.string      :subject
       t.text        :body
-      t.integer     :user_id
+      t.integer     :discuss_user_id
       t.string      :ancestry
       t.datetime    :sent_at
       t.datetime    :received_at
@@ -14,7 +14,7 @@ class SetupDiscuss < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :messages, :user_id
+    add_index :messages, :discuss_user_id
     add_index :messages, :ancestry
 
     create_table :discuss_users do |t|

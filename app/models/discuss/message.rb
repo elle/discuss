@@ -4,9 +4,10 @@ module Discuss
 
     has_ancestry
 
-    belongs_to :user, class_name: 'DiscussUser'
+    belongs_to :discuss_user
+    alias_method :user, :discuss_user
 
-    validates :body, :user_id, presence: true
+    validates :body, :discuss_user_id, presence: true
 
     scope :ordered,      -> { order('created_at asc') }
     scope :active,       -> { not_trashed.not_deleted }
@@ -31,7 +32,7 @@ module Discuss
     scope :drafts, lambda { |user| active.draft.where(user_id: user.id) }
     scope :trash,  lambda { |user| trashed.where(user_id: user.id)  }
 
-    before_save :set_draft
+    #before_save :set_draft
 
     def recipients
       children
