@@ -27,10 +27,11 @@ module Discuss
     scope :deleted,      -> { where('deleted_at is not NULL') }
     scope :not_deleted,  -> { where('deleted_at is NULL') }
 
-    scope :inbox,  lambda { |user| received.where(user_id: user.id) }
-    scope :sent,   lambda { |user| sent.where(user_id: user.id)     }
-    scope :drafts, lambda { |user| active.draft.where(user_id: user.id) }
-    scope :trash,  lambda { |user| trashed.where(user_id: user.id)  }
+    scope :by_user, lambda { |user| where(discuss_user_id: user.id) }
+    scope :inbox,   lambda { |user| by_user(user).received }
+    scope :outbox,  lambda { |user| by_user(user).active.sent }
+    scope :drafts,  lambda { |user| by_user(user).active.draft }
+    scope :trash,   lambda { |user| by_user(user).trashed }
 
     #before_save :set_draft
 

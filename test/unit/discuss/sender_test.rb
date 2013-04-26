@@ -25,7 +25,7 @@ module Discuss
           assert_equal 1, Message.count
         end
 
-        it 'when trashed, should not be included in the drafts scope' do
+        it 'when trashed, should not be included in the #drafts scope' do
           @message.trash!
           assert_includes Message.trash(@teacher), @message
           refute_includes Message.drafts(@teacher), @message
@@ -34,22 +34,57 @@ module Discuss
     end
 
     context 'when sending' do
-      it 'sends a message by calling #send!'
+      before do
+        @message = @teacher.messages.new(body: 'lorem ipsum', recipients: [@bart, @lisa])
+        @message.send!
+      end
+
+      it 'sends a message by calling #send!' do
+        assert @message.sent?
+      end
+
       it 'can have multiple recipients'
-      it 'sets sent_at but not received_at'
-      it 'is included in the #sent scope'
-      it 'when trashed, should not be included in the drafts scope'
+
+      it 'sets sent_at but not received_at' do
+        assert @message.sent?
+        refute @message.received?
+      end
+
+      it 'is included in the #sent scope' do
+        assert_includes Message.outbox(@teacher), @message
+      end
+
+      it 'when trashed, should not be included in the #outbox scope' do
+        @message.trash!
+        assert_includes Message.trash(@teacher), @message
+        refute_includes Message.outbox(@teacher), @message
+      end
     end
 
     context 'when trashed' do
-      it 'is included in the #trash scope'
-      it 'is not included in the #deleted scope'
-      it 'still appears in the recipient inbox'
+      it 'still appears in the recipient inbox' do
+        message = @teacher.messages.new(body: 'lorem ipsum', recipients: [@bart, @lisa])
+        message.send!
+        message.trash!
+      end
     end
 
     context 'when deleted' do
-      it 'can be deleted'
-      it 'does not appear in the #trash scope'
+      before do
+        @message = @teacher.messages.new(body: 'lorem ipsum', recipients: [@bart, @lisa])
+        @message.send!
+        @message.delete!
+      end
+
+      it 'can be deleted' do
+        assert @message.deleted?
+      end
+
+      it 'is not included in the #trash scope' do
+        refute_includes Message.trash(@teacher), @message
+      end
+
+      it 'still appears in the recipient inbox'
     end
 
   end
