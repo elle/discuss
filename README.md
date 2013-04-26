@@ -51,7 +51,7 @@ get the migrations
 
 ## Override current user
 
-The gem uses a current_user helper method that is usally provided with most authentocation systems.
+The gem uses a current_user helper method that is usally provided with most authentication systems.
 If you wish to use your own class, override our `current_discuss_user` method to use your own class.
 
 ```
@@ -66,8 +66,13 @@ If you wish to use your own class, override our `current_discuss_user` method to
 
 ## TODO
 
+* Views
+* Review User class in app
 * Markdown styling for message body
-* Conversation
+* Display conversations
 * Mailers
+* Config options to disbale or enable mailers
+* Move message delivery and mailers to a background job
+* Generator to copy views to parent project for customisation
 
 This project rocks and uses MIT-LICENSE.
