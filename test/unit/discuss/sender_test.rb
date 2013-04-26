@@ -9,9 +9,20 @@ module Discuss
     end
 
     context 'when draft' do
-      it 'saved message as draft when no recipients' do
-        message = @teacher.messages.create(body: 'lorem ipsum')
-        assert message.draft?
+      context 'without recipients' do
+        before do
+            @message = @teacher.messages.create(body: 'lorem ipsum')
+        end
+
+        it 'saved message as draft when no recipients' do
+          assert @message.draft?
+        end
+
+        it 'does not deliver' do
+          @message.send!
+          assert @message.unsent?
+          assert @message.is_childless?
+        end
       end
 
       context 'with recipients' do
@@ -43,7 +54,9 @@ module Discuss
         assert @message.sent?
       end
 
-      it 'can have multiple recipients'
+      it 'can have multiple recipients' do
+        assert_equal 2, @message.children.count
+      end
 
       it 'sets sent_at but not received_at' do
         assert @message.sent?
@@ -73,6 +86,10 @@ module Discuss
       before do
         @message = @teacher.messages.new(body: 'lorem ipsum', recipients: [@bart, @lisa])
         @message.send!
+
+        assert_equal 1, Message.inbox(@bart).count
+        @received_message = Message.inbox(@bart).last
+
         @message.delete!
       end
 
@@ -84,7 +101,9 @@ module Discuss
         refute_includes Message.trash(@teacher), @message
       end
 
-      it 'still appears in the recipient inbox'
+      it 'still appears in the recipient inbox' do
+        assert_includes Message.inbox(@bart), @received_message
+      end
     end
 
   end

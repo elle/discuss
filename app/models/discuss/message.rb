@@ -4,10 +4,13 @@ module Discuss
 
     has_ancestry
 
+    serialize :draft_recipient_ids, Array
+
     belongs_to :discuss_user
     alias_method :user, :discuss_user
 
     validates :body, :discuss_user_id, presence: true
+    validate :uneditable, on: :update
 
     scope :ordered,      -> { order('created_at asc') }
     scope :active,       -> { not_trashed.not_deleted }
@@ -33,23 +36,37 @@ module Discuss
     scope :drafts,  lambda { |user| by_user(user).active.draft }
     scope :trash,   lambda { |user| by_user(user).trashed }
 
-    #before_save :set_draft
+
+    def active?
+      Message.active.include?(self)
+    end
 
     def recipients
       children
     end
 
     def recipients= users
-      # todo
+      users.each { |u| draft_recipient_ids << u.id }
     end
 
-    def active?
-      Message.active.include?(self)
+    def deliver_to user
+      attrs = {subject: subject, body: body, parent_id: id, received_at: Time.zone.now }
+      user.messages.create(attrs)
+    end
+
+    def deliver!
+      draft_recipient_ids.each do |user_id|
+        user = DiscussUser.find user_id
+        deliver_to user if user
+      end
     end
 
     def send!
-      self.sent_at = Time.now
-      save
+      if draft_recipient_ids.any? && unsent?
+        self.sent_at = Time.zone.now
+        save
+        deliver!
+      end
     end
 
     def receive!
@@ -79,16 +96,13 @@ module Discuss
     end
     alias_method :draft?, :unsent?
 
-    def delivered?
-      # todo
+    def editable?
+      is_childless? || !received?
     end
 
-
     private
-    # sent_at is nil by default. so, this is just a safeguard in case there are no recipients
-    def set_draft
-      self.sent_at = nil if recipients.empty?
-      true
+    def uneditable
+      errors.add(:base, 'Cannot edit message that has been sent already') unless editable?
     end
   end
 end

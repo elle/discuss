@@ -6,6 +6,7 @@ class SetupDiscuss < ActiveRecord::Migration
       t.text        :body
       t.integer     :discuss_user_id
       t.string      :ancestry
+      t.string      :draft_recipient_ids
       t.datetime    :sent_at
       t.datetime    :received_at
       t.datetime    :read_at
