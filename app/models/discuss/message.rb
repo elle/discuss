@@ -2,53 +2,85 @@ module Discuss
   class Message < ActiveRecord::Base
     self.table_name = 'messages'
 
-    include Trashable
+    #has_ancestry
 
-    belongs_to :sender, class_name: 'DiscussUser'
-    has_many :message_recipients
-    has_many :recipients, through: :message_recipients, source: :discuss_user
+    belongs_to :user, class_name: 'DiscussUser'
 
-    validates :body, :sender_id, presence: true
+    validates :body, :user_id, presence: true
 
-    scope :ordered,     -> { order('created_at asc') }
+    scope :ordered,      -> { order('created_at asc') }
+    scope :active,       -> { not_trashed.not_deleted }
 
-    scope :draft,       -> { where('sent_at is NULL') }
-    scope :not_draft,   -> { where('sent_at is not NULL')  }
+    scope :draft,        -> { where('sent_at is NULL') }
+    scope :not_draft,    -> { where('sent_at is not NULL')  }
 
-    scope :inbox,  lambda { |user| joins(:message_recipients).where('message_recipients.discuss_user_id = ?', user.id) }
-    scope :sent,   lambda { |user| active.where(sender_id: user.id) }
-    scope :drafts, lambda { |user| draft.not_trashed.not_deleted.where(sender_id: user.id) }
+    scope :sent,         -> { where('sent_at is not NULL') }
+    scope :unsent,       -> { where('sent_at is NULL')  }
 
-    scope :read,   lambda { |user| joins(:message_recipients).where('message_recipients.read_at is not NULL and
-                                                                     message_recipients.discuss_user_id = ?', user.id) }
+    scope :received,     -> { where('received_at is not NULL') }
+    scope :not_received, -> { where('received_at is NULL') }
 
-    scope :trashed_sent,     lambda { |user| trashed.not_deleted.where(sender_id: user.id) }
-    scope :trashed_received, lambda { |user| joins(:message_recipients).where('message_recipients.trashed_at is not NULL and
-                                                                               message_recipients.deleted_at is NULL and
-                                                                               message_recipients.discuss_user_id = ?', user.id) }
+    scope :trashed,      -> { where('trashed_at is not NULL') }
+    scope :not_trashed,  -> { where('trashed_at is NULL') }
+
+    scope :deleted,      -> { where('deleted_at is not NULL') }
+    scope :not_deleted,  -> { where('deleted_at is NULL') }
+
+    scope :inbox,  lambda { |user| received.where(user_id: user.id) }
+    scope :sent,   lambda { |user| sent.where(user_id: user.id)     }
+    scope :drafts, lambda { |user| active.draft.where(user_id: user.id) }
+    scope :trash,  lambda { |user| trashed.where(user_id: user.id)  }
 
     before_save :set_draft
 
-    def self.trash user
-      Message.trashed_sent(user).readonly(false) + Message.trashed_received(user).readonly(false)
+    def recipients
+      [] #children
     end
 
-    def draft?
-      unsent?
+    def recipients= users
+      # todo
     end
 
-    def sent?
-      sent_at.present?
-    end
-
-    def unsent?
-      !sent?
+    def active?
+      Message.active.include?(self)
     end
 
     def send!
       self.sent_at = Time.now
       save
     end
+
+    def receive!
+      update(received_at: Time.zone.now)
+    end
+
+    def read!
+      update(read_at: Time.zone.now)
+    end
+
+    def trash!
+      update(trashed_at: Time.zone.now)
+    end
+
+    def delete!
+      update(deleted_at: Time.zone.now)
+    end
+
+    %w[sent received trashed deleted read].each do |act|
+      define_method "#{act}?" do
+        self.send(:"#{act}_at").present?
+      end
+    end
+
+    def unsent?
+      !sent?
+    end
+    alias_method :draft?, :unsent?
+
+    def delivered?
+      # todo
+    end
+
 
     private
     # sent_at is nil by default. so, this is just a safeguard in case there are no recipients
