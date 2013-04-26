@@ -23,10 +23,7 @@ DatabaseCleaner.strategy = :truncation
 class MiniTest::Spec
   before(:each) do
     DatabaseCleaner.start
-
-    @sender =     Discuss::DiscussUser.create!(email: 'teacher@school.com', user_type: 'teacher', user_id: 4)
-    @recipient =  Discuss::DiscussUser.create!(email: 'bart@student.com', user_type: 'student', user_id: 1)
-    @lisa =       Discuss::DiscussUser.create!(email: 'lisa@student.com', user_type: 'student', user_id: 2)
+    create_users
   end
 
   after(:each) { DatabaseCleaner.clean }
@@ -41,3 +38,9 @@ class FeatureTest < MiniTest::Spec
   include Capybara::DSL # to get capybara working
 end
 
+
+def create_users
+  @sender =     Discuss::DiscussUser.create!(email: 'teacher@school.com', user_type: 'teacher', user_id: 4)
+  @recipient =  Discuss::DiscussUser.create!(email: 'bart@student.com', user_type: 'student', user_id: 1)
+  @lisa =       Discuss::DiscussUser.create!(email: 'lisa@student.com', user_type: 'student', user_id: 2)
+end
