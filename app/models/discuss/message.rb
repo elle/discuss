@@ -31,10 +31,10 @@ module Discuss
     scope :not_deleted,  -> { where('deleted_at is NULL') }
 
     scope :by_user, lambda { |user| where(discuss_user_id: user.id) }
-    scope :inbox,   lambda { |user| by_user(user).received }
+    scope :inbox,   lambda { |user| by_user(user).active.received }
     scope :outbox,  lambda { |user| by_user(user).active.sent }
-    scope :drafts,  lambda { |user| by_user(user).active.draft }
-    scope :trash,   lambda { |user| by_user(user).trashed }
+    scope :drafts,  lambda { |user| by_user(user).active.draft.not_received }
+    scope :trash,   lambda { |user| by_user(user).trashed.not_deleted }
 
 
     def active?
