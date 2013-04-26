@@ -2,59 +2,105 @@ module Discuss
   class Message < ActiveRecord::Base
     self.table_name = 'messages'
 
-    include Trashable
+    has_ancestry
 
-    belongs_to :sender, class_name: 'DiscussUser'
-    has_many :message_recipients
-    has_many :recipients, through: :message_recipients, source: :discuss_user
+    serialize :draft_recipient_ids, Array
 
-    validates :body, :sender_id, presence: true
+    belongs_to :discuss_user
+    alias_method :user, :discuss_user
 
-    scope :ordered,     -> { order('created_at asc') }
+    validates :body, :discuss_user_id, presence: true
+    validate :lock_down_attributes, on: :update
 
-    scope :draft,       -> { where('sent_at is NULL') }
-    scope :not_draft,   -> { where('sent_at is not NULL')  }
 
-    scope :inbox,  lambda { |user| joins(:message_recipients).where('message_recipients.discuss_user_id = ?', user.id) }
-    scope :sent,   lambda { |user| active.where(sender_id: user.id) }
-    scope :drafts, lambda { |user| draft.not_trashed.not_deleted.where(sender_id: user.id) }
+    scope :ordered,      -> { order('created_at asc') }
+    scope :active,       -> { not_trashed.not_deleted }
 
-    scope :read,   lambda { |user| joins(:message_recipients).where('message_recipients.read_at is not NULL and
-                                                                     message_recipients.discuss_user_id = ?', user.id) }
+    scope :draft,        -> { where('sent_at is NULL') }
+    scope :not_draft,    -> { where('sent_at is not NULL')  }
 
-    scope :trashed_sent,     lambda { |user| trashed.not_deleted.where(sender_id: user.id) }
-    scope :trashed_received, lambda { |user| joins(:message_recipients).where('message_recipients.trashed_at is not NULL and
-                                                                               message_recipients.deleted_at is NULL and
-                                                                               message_recipients.discuss_user_id = ?', user.id) }
+    scope :sent,         -> { where('sent_at is not NULL') }
+    scope :unsent,       -> { where('sent_at is NULL')  }
 
-    before_save :set_draft
+    scope :received,     -> { where('received_at is not NULL') }
+    scope :not_received, -> { where('received_at is NULL') }
 
-    def self.trash user
-      Message.trashed_sent(user).readonly(false) + Message.trashed_received(user).readonly(false)
+    scope :trashed,      -> { where('trashed_at is not NULL') }
+    scope :not_trashed,  -> { where('trashed_at is NULL') }
+
+    scope :deleted,      -> { where('deleted_at is not NULL') }
+    scope :not_deleted,  -> { where('deleted_at is NULL') }
+
+    scope :by_user, lambda { |user| where(discuss_user_id: user.id) }
+    scope :inbox,   lambda { |user| by_user(user).active.received }
+    scope :outbox,  lambda { |user| by_user(user).active.sent }
+    scope :drafts,  lambda { |user| by_user(user).active.draft.not_received }
+    scope :trash,   lambda { |user| by_user(user).trashed.not_deleted }
+
+
+    def active?
+      Message.active.include?(self)
     end
 
-    def draft?
-      unsent?
+    def recipients
+      children
     end
 
-    def sent?
-      sent_at.present?
+    def recipients= users
+      users.each { |u| draft_recipient_ids << u.id }
+    end
+
+    def deliver_to user
+      attrs = {subject: subject, body: body, parent_id: id, received_at: Time.zone.now, editable: false }
+      user.messages.create(attrs)
+    end
+
+    def deliver!
+      draft_recipient_ids.each do |user_id|
+        user = DiscussUser.find user_id
+        deliver_to user if user
+      end
+    end
+
+    def send!
+      if draft_recipient_ids.any? && unsent?
+        update_column(:sent_at, Time.zone.now)
+        toggle(:editable)
+        deliver!
+      end
+    end
+
+    def receive!
+      update(received_at: Time.zone.now)
+    end
+
+    def read!
+      update(read_at: Time.zone.now)
+    end
+
+    def trash!
+      update(trashed_at: Time.zone.now)
+    end
+
+    def delete!
+      update(deleted_at: Time.zone.now)
+    end
+
+    %w[sent received trashed deleted read].each do |act|
+      define_method "#{act}?" do
+        self.send(:"#{act}_at").present?
+      end
     end
 
     def unsent?
       !sent?
     end
-
-    def send!
-      self.sent_at = Time.now
-      save
-    end
+    alias_method :draft?, :unsent?
 
     private
-    # sent_at is nil by default. so, this is just a safeguard in case there are no recipients
-    def set_draft
-      self.sent_at = nil if recipients.empty?
-      true
+    def lock_down_attributes
+      return if editable?
+      errors.add(:base, 'Cannot edit') unless deleted_at_changed? || trashed_at_changed? || read_at_changed?
     end
   end
 end

@@ -1,49 +1,33 @@
-# [e] should really be a state machine,
-# but howto when message attributes is split between 2 models,
-# one for sent messages (Message) and one for received messages (MessageRecipient)
-#
-# Also, should be split into 2 classes:
-# 1. message actions
-# 2. mailbox, which should handle stuff like empty_trash! which really should not belong on a message instance
+# @mailbox ||= Mailbox.new(current_user)
 
 module Discuss
   class Mailbox
-    attr_accessor :message, :user
+    attr_accessor :user
 
-    def initialize(message, user)
-      @message = message
+    def initialize(user)
       @user = user
     end
 
-
-    def sender?
-      message.sender == user
+    def inbox
+      Message.inbox(user)
     end
 
-    def recipient?
-      !sender?
+    def outbox
+      Message.outbox(user)
     end
 
-    def recieved_message
-      user.message_recipients.find_by(message: message)
+    def drafts
+      Message.drafts(user)
     end
 
-    def trash!
-      message.trash! if sender?
-      recieved_message.trash! if recipient?
-    end
-
-    def delete!
-      message.delete!
-      recieved_message.delete! if recipient?
-    end
-
-    def read!
-      recieved_message.read! if recipient?
+    def trash
+      Message.trash(user)
     end
 
     def empty_trash!
-      Message.trash(user).each { |m| Mailbox.new(m, user).delete! }
+      trash.each { |message| message.delete! }
     end
   end
 end
+
+

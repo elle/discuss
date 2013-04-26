@@ -10,9 +10,13 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
+# [e] this is to eliminate the scope depraction warnings since it is fixed in the master branch
+gem 'ancestry', git: 'http://github.com/stefankroes/ancestry.git'
+
 # To use debugger
 # gem 'debugger'
 group :test do
   gem 'haml'
+  gem 'awesome_print'
   gem 'database_cleaner', git: 'https://github.com/bmabey/database_cleaner.git', tag: 'v1.0.0.RC1'
 end
