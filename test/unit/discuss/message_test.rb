@@ -9,11 +9,6 @@ module Discuss
     end
 
     context 'with users' do
-      before do
-        @sender = DiscussUser.create(name: 'Homer', email: 'homer@simpsons.com')
-        @recipient = DiscussUser.create(name: 'Marge', email: 'marge@simpsons.com')
-      end
-
       it 'should have a user' do
         message = @sender.messages.new
         refute_nil message.discuss_user
