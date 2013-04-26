@@ -17,9 +17,11 @@ Gem::Specification.new do |s|
   s.test_files = Dir['test/**/*']
 
   s.add_dependency 'rails',         '~> 4.0.0.beta1'
+  s.add_dependency 'ancestry',      '~> 1.3.0'
   s.add_dependency 'haml',          '~> 4.0.2'
   s.add_dependency 'simple_form',   '~> 1.4.1'
 
+  s.add_development_dependency 'awesome_print'
   s.add_development_dependency 'capybara'
   s.add_development_dependency 'debugger'
   s.add_development_dependency 'sqlite3'
