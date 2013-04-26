@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'haml',          '~> 4.0.2'
   s.add_dependency 'simple_form',   '~> 1.4.1'
 
-  s.add_development_dependency 'awesome_print'
   s.add_development_dependency 'capybara'
   s.add_development_dependency 'debugger'
   s.add_development_dependency 'sqlite3'
