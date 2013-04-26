@@ -46,7 +46,7 @@ module Discuss
 
     context 'when sending' do
       before do
-        @message = @teacher.messages.new(body: 'lorem ipsum', recipients: [@bart, @lisa])
+        @message = @teacher.messages.create(body: 'lorem ipsum', recipients: [@bart, @lisa])
         @message.send!
       end
 
@@ -76,7 +76,7 @@ module Discuss
 
     context 'when trashed' do
       it 'still appears in the recipient inbox' do
-        message = @teacher.messages.new(body: 'lorem ipsum', recipients: [@bart, @lisa])
+        message = @teacher.messages.create(body: 'lorem ipsum', recipients: [@bart, @lisa])
         message.send!
         message.trash!
       end
@@ -84,7 +84,7 @@ module Discuss
 
     context 'when deleted' do
       before do
-        @message = @teacher.messages.new(body: 'lorem ipsum', recipients: [@bart, @lisa])
+        @message = @teacher.messages.create(body: 'lorem ipsum', recipients: [@bart, @lisa])
         @message.send!
 
         assert_equal 1, Message.inbox(@bart).count

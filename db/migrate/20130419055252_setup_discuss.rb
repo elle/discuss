@@ -12,6 +12,7 @@ class SetupDiscuss < ActiveRecord::Migration
       t.datetime    :read_at
       t.datetime    :trashed_at
       t.datetime    :deleted_at
+      t.boolean     :editable, default: true
 
       t.timestamps
     end

@@ -8,14 +8,37 @@ module Discuss
       assert_equal 2, message.errors.count
     end
 
-    it 'should have a user' do
-      user = DiscussUser.create(name: 'homer', email: 'homer@simpsons.com')
-      message = user.messages.new
-      refute_nil message.discuss_user
-    end
+    context 'with users' do
+      before do
+        @sender = DiscussUser.create(name: 'Homer', email: 'homer@simpsons.com')
+        @recipient = DiscussUser.create(name: 'Marge', email: 'marge@simpsons.com')
+      end
 
-    it 'cannot go back to being a draft once sent'
-    it 'cannot be edited once sent'
-    it 'cannot be edited if recieved'
+      it 'should have a user' do
+        message = @sender.messages.new
+        refute_nil message.discuss_user
+      end
+
+      context 'when sent' do
+        before do
+          @message = @sender.messages.create(body: 'lorem', recipients: [@recipient])
+          @message.send!
+          refute @message.editable?
+        end
+
+        it 'cannot be edited once sent' do
+          assert_raises(ActiveRecord::RecordInvalid) { @message.update!(body: 'abc') }
+        end
+
+        it 'cannot go back to being a draft once sent' do
+          assert_raises(ActiveRecord::RecordInvalid) { @message.update!(sent_at: nil) }
+        end
+
+        it 'cannot be edited if recieved' do
+          received = Mailbox.new(@recipient).inbox.first
+          assert_raises(ActiveRecord::RecordInvalid) { received.update!(subject: 'new subject') }
+        end
+      end
+    end
   end
 end

@@ -10,7 +10,8 @@ module Discuss
     alias_method :user, :discuss_user
 
     validates :body, :discuss_user_id, presence: true
-    validate :uneditable, on: :update
+    validate :lock_down_attributes, on: :update
+
 
     scope :ordered,      -> { order('created_at asc') }
     scope :active,       -> { not_trashed.not_deleted }
@@ -50,7 +51,7 @@ module Discuss
     end
 
     def deliver_to user
-      attrs = {subject: subject, body: body, parent_id: id, received_at: Time.zone.now }
+      attrs = {subject: subject, body: body, parent_id: id, received_at: Time.zone.now, editable: false }
       user.messages.create(attrs)
     end
 
@@ -63,8 +64,8 @@ module Discuss
 
     def send!
       if draft_recipient_ids.any? && unsent?
-        self.sent_at = Time.zone.now
-        save
+        update_column(:sent_at, Time.zone.now)
+        update_column(:editable, false)
         deliver!
       end
     end
@@ -96,13 +97,10 @@ module Discuss
     end
     alias_method :draft?, :unsent?
 
-    def editable?
-      is_childless? || !received?
-    end
-
     private
-    def uneditable
-      errors.add(:base, 'Cannot edit message that has been sent already') unless editable?
+    def lock_down_attributes
+      return if editable?
+      errors.add(:base, 'Cannot edit') unless deleted_at_changed? || trashed_at_changed? || read_at_changed?
     end
   end
 end
