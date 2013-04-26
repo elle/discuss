@@ -5,7 +5,7 @@ module Discuss
     before_action :check_mailbox_params, only: :show
 
     def show
-      @messages = Message.send(params[:mailbox], user)
+      @messages = Mailbox.new(user).send mailbox_name
     end
 
     private
@@ -14,7 +14,7 @@ module Discuss
     end
 
     def valid_mailbox?
-      %w{inbox sent drafts trash}.include? params[:mailbox]
+      %w{inbox outbox drafts trash}.include? params[:mailbox]
     end
 
     def mailbox_name
