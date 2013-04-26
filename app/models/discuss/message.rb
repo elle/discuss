@@ -2,7 +2,7 @@ module Discuss
   class Message < ActiveRecord::Base
     self.table_name = 'messages'
 
-    #has_ancestry
+    has_ancestry
 
     belongs_to :user, class_name: 'DiscussUser'
 
@@ -34,7 +34,7 @@ module Discuss
     before_save :set_draft
 
     def recipients
-      [] #children
+      children
     end
 
     def recipients= users
