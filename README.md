@@ -33,17 +33,18 @@ get the migrations
 ## Api
 
 ```
-  Message.inbox(user)
-  Message.sent(user)
-  Message.drafts(user)
-  Message.trash(user)
+  @mailbox = Mailbox.new(user)
+  @mailbox.inbox
+  @mailbox.outbox
+  @mailbox.drafts
+  @mailbox.trash
 
-  Message.create(body: 'lorem ipsum', recipients: [@user1, @user2]) # => sends a message
+  @mailbox.empty_trash! # => deletes all messages that are already trashed
 
-  Message.empty_trash(user) # => deletes all messages that are already trashed
+  @message = User.message.create(body: 'lorem ipsum', recipients: [@user1, @user2]) # => creates a draft
+  @message.send! # delivers a message
 
   @message.trash!   # => moves the message to the trash
-
   @message.delete!  # => removes message from all views
 ```
 
