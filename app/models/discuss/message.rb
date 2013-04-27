@@ -1,3 +1,5 @@
+require 'thread'
+
 module Discuss
   class Message < ActiveRecord::Base
     self.table_name = 'messages'
@@ -62,10 +64,12 @@ module Discuss
     end
 
     def send!
-      if draft_recipient_ids.any? && unsent?
-        update_column(:sent_at, Time.zone.now)
-        toggle(:editable)
-        deliver!
+      lock.synchronize do
+        if draft_recipient_ids.any? && unsent?
+          update_column(:sent_at, Time.zone.now)
+          toggle(:editable)
+          deliver!
+        end
       end
     end
 
@@ -104,6 +108,10 @@ module Discuss
 
     def users_from_ids(ids)
       ids.map{|id| DiscussUser.find id}.reject &:blank?
+    end
+
+    def lock
+      @lock || @lock = Mutex.new
     end
   end
 end
