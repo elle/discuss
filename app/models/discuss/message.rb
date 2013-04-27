@@ -1,3 +1,5 @@
+require 'thread'
+
 module Discuss
   class Message < ActiveRecord::Base
     self.table_name = 'messages'
@@ -56,17 +58,18 @@ module Discuss
     end
 
     def deliver!
-      draft_recipient_ids.each do |user_id|
-        user = DiscussUser.find user_id
-        deliver_to user if user
+      users_from_ids(draft_recipient_ids).each do |user|
+        deliver_to user
       end
     end
 
     def send!
-      if draft_recipient_ids.any? && unsent?
-        update_column(:sent_at, Time.zone.now)
-        toggle(:editable)
-        deliver!
+      lock.synchronize do
+        if draft_recipient_ids.any? && unsent?
+          update_column(:sent_at, Time.zone.now)
+          toggle(:editable)
+          deliver!
+        end
       end
     end
 
@@ -101,6 +104,14 @@ module Discuss
     def lock_down_attributes
       return if editable?
       errors.add(:base, 'Cannot edit') unless deleted_at_changed? || trashed_at_changed? || read_at_changed?
+    end
+
+    def users_from_ids(ids)
+      ids.map{|id| DiscussUser.find id}.reject &:blank?
+    end
+
+    def lock
+      @lock || @lock = Mutex.new
     end
   end
 end
