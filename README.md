@@ -65,6 +65,14 @@ If you wish to use your own class, override our `current_discuss_user` method to
   end
 ```
 
+## Running the tests
+
+```
+  rake db:create && rake db:migrate
+  rake db:migrate RAILS_ENV=test
+  rake test
+```
+
 ## TODO
 
 * Views
