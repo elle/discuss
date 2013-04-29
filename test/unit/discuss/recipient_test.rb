@@ -15,6 +15,10 @@ module Discuss
       assert_equal 2, Message.count
     end
 
+    it 'does not deliver if no :body' do
+      assert_raises(ActiveRecord::RecordInvalid) { @received.reply! }
+    end
+
     it 'has a parent message' do
       assert_equal @message, @received.parent
     end
@@ -40,6 +44,8 @@ module Discuss
         assert_equal 1, @outbox.count
         assert_equal @text, @outbox.last.body
       end
+
+      it 'has ancestry tree'
     end
   end
 end

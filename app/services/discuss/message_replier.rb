@@ -6,7 +6,7 @@ class Discuss::MessageReplier
   def initialize options
     @message = options.fetch(:message)
     @subject = options.fetch(:subject, message.subject)
-    @body = options.fetch(:body)
+    @body = options.fetch(:body, nil)
   end
 
   def run
@@ -25,7 +25,7 @@ class Discuss::MessageReplier
   # We creating a new message here because the body is different
   # And then creating a second message when it is delivered
   def reply!
-    reply = user.messages.create(subject: subject, body: body, recipients: [sender])
+    reply = user.messages.create!(subject: subject, body: body, recipients: [sender])
     reply.send!
   end
 end

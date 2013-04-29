@@ -77,7 +77,7 @@ module Discuss
       update(deleted_at: Time.zone.now)
     end
 
-    def reply! options
+    def reply! options={}
       Discuss::MessageReplier.new(options.merge(message: self)).run
     end
 

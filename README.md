@@ -47,6 +47,8 @@ get the migrations
 
   @message.trash!   # => moves the message to the trash
   @message.delete!  # => removes message from all views
+
+  @message.reply!(body: 'awesome', subject: 'adjusted subject') # => replies to sender. only :body is really needed
 ```
 
 
@@ -76,7 +78,6 @@ If you wish to use your own class, override our `current_discuss_user` method to
 ## TODO
 
 * Views
-* Review User class in app
 * Markdown styling for message body
 * Display conversations
 * Mailers
