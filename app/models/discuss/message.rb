@@ -40,7 +40,7 @@ module Discuss
 
 
     def active?
-      Message.active.include?(self)
+      !trashed? && !deleted?
     end
 
     def recipients
