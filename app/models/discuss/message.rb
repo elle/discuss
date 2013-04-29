@@ -51,23 +51,12 @@ module Discuss
       users.each { |u| draft_recipient_ids << u.id }
     end
 
-    def deliver_to user
-      attrs = {subject: subject, body: body, parent_id: id, received_at: Time.zone.now, editable: false }
-      user.messages.create(attrs)
-    end
-
-    def deliver!
-      users_from_ids(draft_recipient_ids).each do |user|
-        deliver_to user
-      end
-    end
-
     def send!
       lock.synchronize do
         if draft_recipient_ids.any? && unsent?
           update_column(:sent_at, Time.zone.now)
           toggle(:editable)
-          deliver!
+          Discuss::MessageSender.new(self).run
         end
       end
     end
@@ -105,12 +94,8 @@ module Discuss
       errors.add(:base, 'Cannot edit') unless deleted_at_changed? || trashed_at_changed? || read_at_changed?
     end
 
-    def users_from_ids(ids)
-      ids.map{|id| User.find id}.reject &:blank?
-    end
-
     def lock
-      @lock || @lock = Mutex.new
+      @lock ||= Mutex.new
     end
   end
 end

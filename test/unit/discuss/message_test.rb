@@ -39,37 +39,16 @@ module Discuss
     context 'message held by multiple threads' do
       require 'thread'
 
-      before do
-        @message = @sender.messages.create(body: 'lorem', recipients: [@recipient])
-        @message.instance_eval <<-END
-          @mutex = Mutex.new
-          @latch = ConditionVariable.new
-          @sends = 0
-          def deliver!
-            @mutex.synchronize do
-              @sends += 1
-              @latch.wait(@mutex, 1)
-            end
-          end
-          def sends
-            @sends
-          end
-        END
-      end
-
       it 'can only be sent once' do
-        assert_equal 0, @message.sends
-        t1 = Thread.new do
-          @message.send!
-        end
-        t2 = Thread.new do
-          @message.send!
-        end
+        @message = @sender.messages.create(body: 'lorem', recipients: [@recipient])
+
+        t1 = Thread.new { @message.send! }
+        t2 = Thread.new { @message.send! }
 
         t1.join
         t2.join
 
-        assert_equal 1, @message.sends
+        assert_equal 1, @message.children.count
       end
 
     end
