@@ -29,11 +29,19 @@ module Discuss
           assert_raises(ActiveRecord::RecordInvalid) { @message.update!(sent_at: nil) }
         end
 
-        it 'cannot be edited if recieved' do
-          received = Mailbox.new(@recipient).inbox.first
-          assert_raises(ActiveRecord::RecordInvalid) { received.update!(subject: 'new subject') }
+        context 'when received' do
+          before { @received = Mailbox.new(@recipient).inbox.first }
+
+          it 'cannot be edited' do
+            assert_raises(ActiveRecord::RecordInvalid) { @received.update!(subject: 'new subject') }
+          end
+
+          context 'when replied' do
+            before { @received.reply!(body: 'awesome') }
+          end
         end
       end
+
     end
 
     context 'message held by multiple threads' do

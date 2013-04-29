@@ -77,6 +77,10 @@ module Discuss
       update(deleted_at: Time.zone.now)
     end
 
+    def reply! options
+      Discuss::MessageReplier.new(options.merge(message: self)).run
+    end
+
     %w[sent received trashed deleted read].each do |act|
       define_method "#{act}?" do
         self.send(:"#{act}_at").present?
