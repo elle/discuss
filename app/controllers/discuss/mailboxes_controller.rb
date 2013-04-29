@@ -5,7 +5,7 @@ module Discuss
     before_action :check_mailbox_params, only: :show
 
     def show
-      @messages = Mailbox.new(user).send mailbox_name
+      @messages = Mailbox.new(current_user).send mailbox_name
     end
 
     private

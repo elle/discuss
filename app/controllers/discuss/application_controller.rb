@@ -1,15 +1,11 @@
 module Discuss
   class ApplicationController < ::ApplicationController
-    before_action :user
+    before_action :current_user
 
     private
-    def current_discuss_user
-      current_user
+    def current_user
+      @current_user ||= User.where(email: 'user@test.com', first_name: 'hell', last_name: 'boy').first_or_create
     end
-
-    def user
-      @user ||= DiscussUser.find_by(user_id: current_discuss_user.id, user_type: current_discuss_user.class.to_s)
-    end
-    helper_method :user
+    helper_method :current_user
   end
 end

@@ -8,10 +8,9 @@ module Discuss
 
     serialize :draft_recipient_ids, Array
 
-    belongs_to :discuss_user
-    alias_method :user, :discuss_user
+    belongs_to :user
 
-    validates :body, :discuss_user_id, presence: true
+    validates :body, :user_id, presence: true
     validate :lock_down_attributes, on: :update
 
 
@@ -33,7 +32,7 @@ module Discuss
     scope :deleted,      -> { where('deleted_at is not NULL') }
     scope :not_deleted,  -> { where('deleted_at is NULL') }
 
-    scope :by_user, lambda { |user| where(discuss_user_id: user.id) }
+    scope :by_user, lambda { |user| where(user_id: user.id) }
     scope :inbox,   lambda { |user| by_user(user).active.received }
     scope :outbox,  lambda { |user| by_user(user).active.sent }
     scope :drafts,  lambda { |user| by_user(user).active.draft.not_received }
@@ -107,7 +106,7 @@ module Discuss
     end
 
     def users_from_ids(ids)
-      ids.map{|id| DiscussUser.find id}.reject &:blank?
+      ids.map{|id| User.find id}.reject &:blank?
     end
 
     def lock

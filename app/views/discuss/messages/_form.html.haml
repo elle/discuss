@@ -3,7 +3,8 @@
   -# if message
     =# f.hidden_field :parent_id, value: message.id
 
-  = f.association :recipients, collection: Discuss::DiscussUser.all.reject{|u| u == user }
+  - # [e] TODO review User.all query
+  = f.association :recipients, collection: User.all.reject{|u| u == user }
   = f.input :subject
   = f.input :body
 

@@ -11,7 +11,7 @@ module Discuss
     context 'with users' do
       it 'should have a user' do
         message = @sender.messages.new
-        refute_nil message.discuss_user
+        refute_nil message.user
       end
 
       context 'when sent' do

@@ -40,7 +40,7 @@ end
 
 
 def create_users
-  @sender =     Discuss::DiscussUser.create!(email: 'teacher@school.com', user_type: 'teacher', user_id: 4)
-  @recipient =  Discuss::DiscussUser.create!(email: 'bart@student.com', user_type: 'student', user_id: 1)
-  @lisa =       Discuss::DiscussUser.create!(email: 'lisa@student.com', user_type: 'student', user_id: 2)
+  @sender =     User.create!(email: 'teacher@school.com', first_name: 'teacher')
+  @recipient =  User.create!(email: 'bart@student.com', first_name: 'bart', last_name: 'simpsons')
+  @lisa =       User.create!(email: 'lisa@student.com', first_name: 'lisa', last_name: 'simpsons')
 end

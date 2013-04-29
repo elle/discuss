@@ -59,8 +59,8 @@ If you wish to use your own class, override our `current_discuss_user` method to
   class ApplicationController < ActionController::Base
 
     private
-    def current_discuss_user
-      current_user
+    def current_user
+      # Your own implementation
     end
   end
 ```
