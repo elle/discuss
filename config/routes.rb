@@ -2,7 +2,7 @@ Discuss::Engine.routes.draw do
 
   get 'messages/compose', to: 'messages#new', as: :compose
 
-  resources :messages do
+  resource :messages, except: :index do
     post 'save_draft', to: 'messages#save_draft', as: :save_draft
   end
 
