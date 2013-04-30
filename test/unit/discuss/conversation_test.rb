@@ -36,9 +36,20 @@ module Discuss
       end
 
       context 'when not message owner' do
+        before { @recipient_conversation = Conversation.new(@message, @recipient) }
+
         it 'still find the correct messages' do
-          @recipient_conversation = Conversation.new(@message, @recipient)
           refute_equal @recipient_conversation.for_user, @conversation.for_user
+        end
+
+        it 'trashes the conversation' do
+          @recipient_conversation.trash_conversation!
+          @recipient_conversation.for_user.each do |m|
+            assert m.trashed?
+          end
+          @conversation.for_user.each do |m|
+            refute m.trashed?
+          end
         end
       end
     end
