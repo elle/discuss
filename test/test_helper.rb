@@ -36,11 +36,15 @@ end
 class FeatureTest < MiniTest::Spec
   include Rails.application.routes.url_helpers # to get url_helpers working
   include Capybara::DSL # to get capybara working
+
+  before(:each) do
+    create_users
+  end
 end
 
 
 def create_users
-  @sender =     User.create!(email: 'teacher@school.com', first_name: 'teacher')
-  @recipient =  User.create!(email: 'bart@student.com', first_name: 'bart', last_name: 'simpsons')
-  @lisa =       User.create!(email: 'lisa@student.com', first_name: 'lisa', last_name: 'simpsons')
+  @sender       = User.where(email: 'teacher@school.com', first_name: 'teacher').first_or_create
+  @recipient    = User.where(email: 'bart@student.com', first_name: 'bart', last_name: 'simpsons').first_or_create
+  @lisa         = User.where(email: 'lisa@student.com', first_name: 'lisa', last_name: 'simpsons').first_or_create
 end
