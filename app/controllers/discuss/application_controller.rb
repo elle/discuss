@@ -1,11 +1,11 @@
 module Discuss
   class ApplicationController < ::ApplicationController
-    before_action :current_user
+    before_action :discuss_current_user
 
     private
-    def current_user
-      @current_user ||= User.where(email: 'user@test.com', first_name: 'hell', last_name: 'boy').first_or_create
+    def discuss_current_user
+      raise 'Must override me' unless current_user
     end
-    helper_method :current_user
+    helper_method :discuss_current_user
   end
 end
