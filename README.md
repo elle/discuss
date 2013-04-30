@@ -49,6 +49,12 @@ get the migrations
   @message.delete!  # => removes message from all views
 
   @message.reply!(body: 'awesome', subject: 'adjusted subject') # => replies to sender. only :body is really needed
+
+  # With conversation:
+  @conversation = Discuss::Conversation.new(@message, user) # => user defaults to message.owner if not passed through
+  @conversation.all # => shows all the messages, owned or not by the user
+  @conversation.for_user # => shows only the messages the user owns
+  @conversation.trash_conversation! # => trashes messages in the conversation that the user owns
 ```
 
 
