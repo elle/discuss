@@ -39,7 +39,10 @@ class FeatureTest < MiniTest::Spec
 
   before(:each) do
     create_users
+    bypass_user
   end
+
+  after(:each) { restore_user }
 end
 
 
@@ -47,4 +50,19 @@ def create_users
   @sender       = User.where(email: 'teacher@school.com', first_name: 'teacher').first_or_create
   @recipient    = User.where(email: 'bart@student.com', first_name: 'bart', last_name: 'simpsons').first_or_create
   @lisa         = User.where(email: 'lisa@student.com', first_name: 'lisa', last_name: 'simpsons').first_or_create
+end
+
+
+def bypass_user(user=User.first)
+  current_user = @sender unless @current_user
+  Discuss::ApplicationController.send(:alias_method, :old_user, :discuss_current_user)
+  Discuss::ApplicationController.send(:define_method, :discuss_current_user) do
+    current_user
+  end
+  @current_user = current_user
+end
+
+
+def restore_user
+  Discuss::ApplicationController.send(:alias_method, :discuss_current_user, :old_user)
 end
