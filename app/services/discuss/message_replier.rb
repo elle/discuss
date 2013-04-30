@@ -25,7 +25,7 @@ class Discuss::MessageReplier
   # We creating a new message here because the body is different
   # And then creating a second message when it is delivered
   def reply!
-    reply = user.messages.create!(subject: subject, body: body, recipients: [sender])
+    reply = message.children.create!(subject: subject, body: body, user: user, recipients: [sender])
     reply.send!
   end
 end

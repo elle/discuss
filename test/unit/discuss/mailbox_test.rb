@@ -68,8 +68,5 @@ module Discuss
         assert_equal 0, @mailbox.trash.count
       end
     end
-
-    context 'conversation' do
-    end
   end
 end

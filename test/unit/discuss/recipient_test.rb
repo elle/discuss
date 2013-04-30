@@ -45,7 +45,12 @@ module Discuss
         assert_equal @text, @outbox.last.body
       end
 
-      it 'has ancestry tree'
+      it 'has ancestry tree' do
+        last_message = Message.last
+        assert_equal 3, last_message.ancestors.count
+        assert_equal @message, last_message.root
+        # ap Message.all.collect &:ancestry
+      end
     end
   end
 end
