@@ -47,6 +47,10 @@ module Discuss
       children
     end
 
+    def sender
+      sent? ? user : parent.user
+    end
+
     def recipients= users
       users.each { |u| draft_recipient_ids << u.id }
     end
