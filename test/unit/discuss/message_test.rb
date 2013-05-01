@@ -30,14 +30,23 @@ module Discuss
         end
 
         context 'when received' do
-          before { @received = Mailbox.new(@recipient).inbox.first }
+          before { @received_by_recipient = Mailbox.new(@recipient).inbox.first }
 
           it 'cannot be edited' do
-            assert_raises(ActiveRecord::RecordInvalid) { @received.update!(subject: 'new subject') }
+            assert_raises(ActiveRecord::RecordInvalid) { @received_by_recipient.update!(subject: 'new subject') }
           end
 
-          context 'when replied' do
-            before { @received.reply!(body: 'awesome') }
+          context 'conversation' do
+            before do
+              @received_by_recipient.reply!(body: 'awesome')
+              @reply_received_by_sender = Mailbox.new(@sender).inbox.first
+              @reply_received_by_sender.reply!(body: 'duly noted!')
+            end
+
+            it 'has correct recipients size' do
+              assert_equal 5, @message.descendants.count
+              assert_equal 1, @message.recipients.count
+            end
           end
         end
       end
