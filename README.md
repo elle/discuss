@@ -31,7 +31,7 @@ get the migrations
   rake discuss:install:migrations
 ```
 
-## Api
+## DSL
 
 ```
   @mailbox = Mailbox.new(user)
@@ -57,6 +57,23 @@ get the migrations
   @conversation.trash_conversation! # => trashes messages in the conversation that the user owns
 ```
 
+## User class
+
+The User class has the following two methods:
+
+```
+  def to_s
+    title
+  end
+
+  def title
+   "#{prefix} <#{email}>"
+  end
+```
+
+In the gem, these two methods rely on having `first_name`, `last_name` and `email` attributes.
+But you can override either method with your implementation.
+
 
 ## Override current user
 
@@ -67,11 +84,12 @@ If you wish to use your own class, override our `current_discuss_user` method to
   class ApplicationController < ActionController::Base
 
     private
-    def current_user
+    def discuss_current_user
       # Your own implementation
     end
   end
 ```
+
 
 ## Running the tests
 
