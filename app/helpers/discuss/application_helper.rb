@@ -7,9 +7,10 @@ module Discuss
       when 'inbox'  then message.sender.user
       when 'outbox' then recipients_string(message.recipient_list)
       when 'drafts' then message.draft_recipient_ids ? recipients_string(message.recipient_list) : 'Draft'
-      when 'trash'  then message.sent? ? recipients_string(message.recipient_list) : message.sender.user
+      when 'trash'
+        recipients_string(message.recipient_list) if message.sent? || message.draft_recipient_ids
       else
-        message.user
+        ''
       end
     end
 

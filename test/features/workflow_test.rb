@@ -10,6 +10,7 @@ class WorkFlowTest< FeatureTest
 
   context 'with messages' do
     before do
+      @draft = @sender.messages.create(body: 'only for me eyes', recipients: [@lisa])
       @message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient])
       @message.send!
       @outbox = Discuss::Mailbox.new(@sender).outbox
@@ -26,15 +27,27 @@ class WorkFlowTest< FeatureTest
     end
 
     it 'sees drafts' do
-      @draft = @sender.messages.create(body: 'only for me eyes', recipients: [@lisa])
       visit '/discuss/mailbox/drafts'
       assert page.has_content?('Drafts')
-      #print page.html
+
       within '.messages' do
         assert page.has_content?(@draft.body)
         assert page.has_content?(@lisa.to_s)
       end
+    end
 
+    it 'sees trash' do
+      @draft.trash!
+      @outbox.first.trash!
+      visit '/discuss/mailbox/trash'
+      assert page.has_content?('Trash')
+      assert page.has_content?('2 messages')
+
+      within '.messages' do
+        assert_equal 2, page.all('.discuss_message').size
+        assert page.has_content?(@draft.body)
+        assert page.has_content?(@recipient.to_s)
+      end
     end
   end
 end
