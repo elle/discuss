@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
     try(:full_name) || email
   end
 
-  def title
+  def message_title
     "#{prefix} <#{email}>"
   end
 end

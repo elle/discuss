@@ -18,11 +18,23 @@ class WorkFlowTest< FeatureTest
 
     it 'sees an outbox' do
       visit '/discuss/mailbox/outbox'
-      print page.html
+      #print page.html
       assert page.has_content?('1 message')
       within '.messages' do
-        assert page.has_content?(@recipient.title)
+        assert page.has_content?(@recipient.to_s)
       end
+    end
+
+    it 'sees drafts' do
+      @draft = @sender.messages.create(body: 'only for me eyes', recipients: [@lisa])
+      visit '/discuss/mailbox/drafts'
+      assert page.has_content?('Drafts')
+      #print page.html
+      within '.messages' do
+        assert page.has_content?(@draft.body)
+        assert page.has_content?(@lisa.to_s)
+      end
+
     end
   end
 end

@@ -63,16 +63,14 @@ The User class has the following two methods:
 
 ```
   def to_s
-    title
-  end
-
-  def title
-   "#{prefix} <#{email}>"
+    full_name
   end
 ```
 
-In the gem, these two methods rely on having `first_name`, `last_name` and `email` attributes.
+In the gem, these two methods rely on having `first_name`, `last_name` attributes.
 But you can override either method with your implementation.
+
+If you wish to actually send out an email, then the User class will also need an `email`.
 
 
 ## Override current user
