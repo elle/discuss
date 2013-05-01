@@ -18,8 +18,11 @@ class WorkFlowTest< FeatureTest
 
     it 'sees an outbox' do
       visit '/discuss/mailbox/outbox'
-      #print page.html
+      print page.html
       assert page.has_content?('1 message')
+      within '.messages' do
+        assert page.has_content?(@recipient.title)
+      end
     end
   end
 end
