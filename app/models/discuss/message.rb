@@ -47,6 +47,10 @@ module Discuss
       children
     end
 
+    def recipient_list
+      draft_recipient_ids.map {|id| User.find id}.reject(&:blank?)
+    end
+
     def sender
       sent? ? user : parent.user
     end

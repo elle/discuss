@@ -16,7 +16,7 @@ class Discuss::MessageSender
 
   private
   def deliver!
-    users_from_ids(draft_recipient_ids).each do |user|
+    message.recipient_list.each do |user|
       deliver_to user
     end
   end
@@ -24,9 +24,5 @@ class Discuss::MessageSender
   def deliver_to user
     attrs = {subject: subject, body: body, parent_id: id, received_at: Time.zone.now, editable: false }
     user.messages.create(attrs)
-  end
-
-  def users_from_ids(ids)
-    ids.map {|id| User.find id}.reject &:blank?
   end
 end
