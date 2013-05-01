@@ -8,18 +8,28 @@ class WorkFlowTest< FeatureTest
     assert page.has_content?('0 messages')
   end
 
+  context 'new message' do
+    it 'composes a draft'
+
+    it 'sends a message' do
+      skip 'todo'
+      visit '/discuss/message/compose'
+      print page.html
+    end
+  end
+
   context 'with messages' do
     before do
       @draft = @sender.messages.create(body: 'only for me eyes', recipients: [@lisa])
       @message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient])
       @message.send!
       @outbox = Discuss::Mailbox.new(@sender).outbox
-      assert_equal 1, @outbox.count
     end
 
     it 'sees an outbox' do
+      assert_equal 1, @outbox.count
+
       visit '/discuss/mailbox/outbox'
-      #print page.html
       assert page.has_content?('1 message')
       within '.messages' do
         assert page.has_content?(@recipient.to_s)
@@ -49,6 +59,10 @@ class WorkFlowTest< FeatureTest
         assert page.has_content?(@recipient.to_s)
       end
     end
+    it 'views a message'
+    it 'edits a draft'
+    it 'cannot edit a received message'
+    it 'replies'
   end
 end
 

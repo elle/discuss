@@ -4,6 +4,10 @@ module Discuss
   class MessagesController < ApplicationController
     before_action :message, only: [:show, :update, :destroy]
 
+    def new
+      @message = discuss_current_user.messages.new
+    end
+
     def show
     end
 
