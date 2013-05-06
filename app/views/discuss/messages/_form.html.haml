@@ -1,14 +1,10 @@
-- # TODO add a save draft button and handle that in controller
-- # Option 1: hijax the form action path
-- # Option 2:
-- # hidden draft check_box and setting it to true on pressing the 'save draft' button
-- # then if js is disabled, display the checkbox, but not the 'save draft' button
 = simple_form_for @message do |f|
 
   - # TODO review User.all query
   - # TODO if no first_name and last_name, display user's email
-  = f.input :draft_recipient_ids, collection: User.all.reject{|u| u == discuss_current_user }
+  = f.input :draft_recipient_ids, collection: User.all.reject{|u| u == discuss_current_user }, label: 'Recipients'
   = f.input :subject
-  = f.input :body
+  = f.input :body, required: false
+  = f.input :draft, as: :boolean
 
   = f.submit 'Send message'
