@@ -12,6 +12,8 @@ gemspec
 
 # [e] this is to eliminate the scope depraction warnings since it is fixed in the master branch
 gem 'ancestry', git: 'http://github.com/stefankroes/ancestry.git'
+gem 'coffee-rails'
+gem 'jquery-rails'
 
 # To use debugger
 # gem 'debugger'
