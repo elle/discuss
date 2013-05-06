@@ -9,7 +9,7 @@ module Discuss
         end
 
         it 'saved message as draft when no recipients' do
-          assert @message.draft?
+          assert @message.unsent?
         end
 
         it 'does not deliver' do
@@ -23,7 +23,7 @@ module Discuss
         before { @message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient, @lisa]) }
 
         it 'defaults to draft' do
-          assert @message.draft?
+          assert @message.unsent?
         end
 
         it 'should not deliver the message' do
