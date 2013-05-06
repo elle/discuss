@@ -20,15 +20,6 @@ module Discuss
       end
     end
 
-    def save_draft
-      @message = user.messages.new(message_params)
-      if @message.save
-        redirect_to mailbox_path(:inbox), notice: 'Message saved as draft'
-      else
-        render :new
-      end
-    end
-
     def update
       message.update(message_params)
       redirect_to mailbox_path(:inbox)
@@ -46,7 +37,7 @@ module Discuss
     helper_method :message
 
     def message_params
-      params.require(:message).permit(:subject, :body, :parent_id, recipient_ids: [])
+      params.require(:message).permit(:subject, :body, :draft, draft_recipient_ids: [])
     end
   end
 end

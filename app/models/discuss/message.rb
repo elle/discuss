@@ -2,10 +2,9 @@ require 'thread'
 
 module Discuss
   class Message < ActiveRecord::Base
-    # self.table_name = 'messages'
-
     has_ancestry
 
+    attr_accessor :draft
     serialize :draft_recipient_ids, Array
 
     belongs_to :user
@@ -59,7 +58,7 @@ module Discuss
 
     def send!
       lock.synchronize do
-        if draft_recipient_ids.any? && unsent?
+        if draft_recipient_ids.any? && unsent? && !draft?
           update_column(:sent_at, Time.zone.now)
           toggle(:editable)
           Discuss::MessageSender.new(self).run
@@ -96,7 +95,10 @@ module Discuss
     def unsent?
       !sent?
     end
-    alias_method :draft?, :unsent?
+
+    def draft?
+      self.draft == '1'
+    end
 
     private
     def lock_down_attributes
