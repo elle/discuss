@@ -2,7 +2,7 @@ require 'thread'
 
 module Discuss
   class Message < ActiveRecord::Base
-    self.table_name = 'messages'
+    # self.table_name = 'messages'
 
     has_ancestry
 
@@ -12,7 +12,6 @@ module Discuss
 
     validates :body, :user_id, presence: true
     validate :lock_down_attributes, on: :update
-
 
     scope :ordered,      -> { order('created_at asc') }
     scope :active,       -> { not_trashed.not_deleted }
@@ -37,7 +36,6 @@ module Discuss
     scope :outbox,  lambda { |user| by_user(user).active.sent }
     scope :drafts,  lambda { |user| by_user(user).active.draft.not_received }
     scope :trash,   lambda { |user| by_user(user).trashed.not_deleted }
-
 
     def active?
       !trashed? && !deleted?

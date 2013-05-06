@@ -1,7 +1,7 @@
 class SetupDiscuss < ActiveRecord::Migration
 
   def change
-    create_table :messages do |t|
+    create_table :discuss_messages do |t|
       t.string      :subject
       t.text        :body
       t.integer     :user_id
@@ -16,7 +16,7 @@ class SetupDiscuss < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :messages, :user_id
-    add_index :messages, :ancestry
+    add_index :discuss_messages, :user_id
+    add_index :discuss_messages, :ancestry
   end
 end
