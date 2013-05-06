@@ -6,9 +6,8 @@ module Discuss
       case mailbox_name
       when 'inbox'  then message.sender.user
       when 'outbox' then recipients_string(message.recipient_list)
-      when 'drafts' then message.draft_recipient_ids ? recipients_string(message.recipient_list) : 'Draft'
-      when 'trash'
-        recipients_string(message.recipient_list) if message.sent? || message.draft_recipient_ids
+      when 'drafts' then recipients_string(message.recipient_list)
+      when 'trash'  then recipients_string(message.recipient_list)
       else
         ''
       end
