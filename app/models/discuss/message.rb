@@ -40,20 +40,20 @@ module Discuss
       !trashed? && !deleted?
     end
 
-    def recipients
-      children
-    end
-
-    def recipient_list
-      draft_recipient_ids.map {|id| User.find id}.reject(&:blank?)
-    end
-
     def sender
       sent? ? user : parent.user
     end
 
+    def recipients
+      children
+    end
+
     def recipients= users
       users.each { |u| draft_recipient_ids << u.id }
+    end
+
+    def recipient_list
+      draft_recipient_ids.map {|id| User.find id}.reject(&:blank?)
     end
 
     def send!
