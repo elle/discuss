@@ -1,0 +1,3 @@
+form#new_message div.input { margin: 5px 0; }
+form#new_message label, form#new_message input { display: inline-block; }
+form#new_message label { width: 100px; }
