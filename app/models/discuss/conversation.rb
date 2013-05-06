@@ -1,4 +1,4 @@
-# conversation shoud be in the context of a user,
+# conversation should be in the context of a user,
 # so we grab only the messages the user owns
 # but we are defaulting to the message user just in case
 module Discuss
