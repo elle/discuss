@@ -1,18 +1,19 @@
-%h2= mailbox_name.humanize
+%section#discuss.mailboxes
+  %h2= mailbox_name.humanize
 
-= pluralize(@messages.size, 'message')
+  = pluralize(@messages.size, 'message')
 
-%section.messages
-  - if @messages.any?
-    %table
-      %tbody
-        - @messages.each do |message|
-          %tr[message]
-            %td
-              = link_to message_person(mailbox_name, message), message
-            %td
-              = link_to message.try(:subject), message
-              = link_to truncate(message.body, length: 50), message
-            %td
-              = message.created_at.to_date
+  %section.messages
+    - if @messages.any?
+      %table
+        %tbody
+          - @messages.each do |message|
+            %tr[message]
+              %td
+                = link_to message_person(mailbox_name, message), message
+              %td
+                = link_to message.try(:subject), message
+                = link_to truncate(message.body, length: 50), message
+              %td
+                = message.created_at.to_date
 

@@ -1,13 +1,16 @@
-%h2 Message
+%section#discuss
+  .message
+    %h2 Message
 
-%ul
-  %li Subject: #{message.try(:subject)}
-  %li Sender: #{message.sender}
-  %li Date: #{message.created_at}
-  %li Recipients #{message.recipients.collect(&:name)}
+    %ul.headers
+      %li Subject: #{message.try(:subject)}
+      %li Sender: #{message.sender}
+      %li Date: #{message.created_at}
+      %li Recipients #{message.recipients.collect(&:name)}
 
-.body= message.body
+    .body= message.body
 
-%h3 Reply
-= render 'form'
+  .compose.reply
+    %h3 Reply
+    = render 'form'
 
