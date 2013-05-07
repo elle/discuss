@@ -53,7 +53,7 @@ module Discuss
     end
 
     def recipient_list
-      draft_recipient_ids.map {|id| User.find id}.reject(&:blank?)
+      draft_recipient_ids.reject(&:blank?).map {|id| User.find id}
     end
 
     def send!
@@ -65,6 +65,11 @@ module Discuss
         end
       end
     end
+
+    def reply! options={}
+      Discuss::MessageReplier.new(options.merge(message: self)).run
+    end
+
 
     def receive!
       update(received_at: Time.zone.now)
@@ -80,10 +85,6 @@ module Discuss
 
     def delete!
       update(deleted_at: Time.zone.now)
-    end
-
-    def reply! options={}
-      Discuss::MessageReplier.new(options.merge(message: self)).run
     end
 
     %w[sent received trashed deleted read].each do |act|

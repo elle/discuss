@@ -12,9 +12,15 @@ class WorkFlowTest< FeatureTest
     it 'composes a draft'
 
     it 'sends a message' do
-      skip 'todo'
       visit '/discuss/message/compose'
-      print page.html
+      select 'bart simpsons', from: 'Recipients'
+      fill_in 'Subject', with: 'camping trip'
+      fill_in 'Your message', with: "who's bringing what?"
+      click_on 'Send message'
+      #print page.html
+      assert page.has_css?('div.notice')
+      assert_equal 1, Discuss::Mailbox.new(@sender).outbox.count
+      assert_equal 1, Discuss::Mailbox.new(@recipient).inbox.count
     end
   end
 

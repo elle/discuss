@@ -5,7 +5,7 @@
     %ul.headers
       %li Subject: #{message.try(:subject)}
       %li Sender: #{message.sender}
-      %li Date: #{message.created_at}
+      %li Date: #{message.created_at.to_date}
       %li Recipients #{message.recipients.collect(&:name)}
 
     .body= message.body
