@@ -1,15 +1,12 @@
 class Discuss::MessageSender
-  attr_reader :message, :subject, :body, :recipients
+  attr_reader :message, :recipients
 
-  delegate :sender, to: :message
+  delegate :body, to: :message
+  delegate :subject, to: :message
 
-  # when sending: users: message.recipient_list
-  # when replying: users: message.sender
-  def initialize options
-    @message = options.fetch(:message)
-    @subject = options.fetch(:subject, message.subject)
-    @body = options.fetch(:body, message.body)
-    @recipients = options.fetch(:recipients, message.recipient_list)
+  def initialize message
+    @message = message
+    @recipients = message.recipient_list
   end
 
   def run

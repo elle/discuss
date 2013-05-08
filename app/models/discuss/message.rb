@@ -56,10 +56,10 @@ module Discuss
       draft_recipient_ids.reject(&:blank?).map {|id| User.find id}
     end
 
-    def send! options={}
+    def send!
       lock.synchronize do
         unless draft?
-          Discuss::MessageSender.new(options.merge(message: self)).run
+          Discuss::MessageSender.new(self).run
         end
       end
     end
