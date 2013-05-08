@@ -58,9 +58,7 @@ module Discuss
 
     def send!
       lock.synchronize do
-        unless draft?
-          Discuss::MessageSender.new(self).run
-        end
+        Discuss::MessageSender.new(self).run unless draft?
       end
     end
 
