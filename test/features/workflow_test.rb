@@ -9,7 +9,18 @@ class WorkFlowTest< FeatureTest
   end
 
   context 'new message' do
-    it 'composes a draft'
+    it 'composes a draft' do
+      visit '/discuss/message/compose'
+      select 'bart simpsons', from: 'Recipients'
+      fill_in 'Subject', with: 'camping trip'
+      fill_in 'Your message', with: "who's bringing what?"
+      check 'Draft'
+      click_on 'Send message'
+      #print page.html
+      assert page.has_css?('div.notice')
+      assert_equal 1, Discuss::Mailbox.new(@sender).drafts.count
+      assert_equal 0, Discuss::Mailbox.new(@recipient).inbox.count
+    end
 
     it 'sends a message' do
       visit '/discuss/message/compose'
@@ -17,7 +28,6 @@ class WorkFlowTest< FeatureTest
       fill_in 'Subject', with: 'camping trip'
       fill_in 'Your message', with: "who's bringing what?"
       click_on 'Send message'
-      #print page.html
       assert page.has_css?('div.notice')
       assert_equal 1, Discuss::Mailbox.new(@sender).outbox.count
       assert_equal 1, Discuss::Mailbox.new(@recipient).inbox.count

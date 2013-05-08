@@ -56,20 +56,23 @@ module Discuss
       draft_recipient_ids.reject(&:blank?).map {|id| User.find id}
     end
 
-    def send!
+    def send! options={}
       lock.synchronize do
-        if draft_recipient_ids.any? && unsent? && !draft?
-          update_column(:sent_at, Time.zone.now)
-          toggle(:editable)
-          Discuss::MessageSender.new(self).run
+        unless draft?
+          Discuss::MessageSender.new(options.merge(message: self)).run
         end
       end
     end
 
     def reply! options={}
-      Discuss::MessageReplier.new(options.merge(message: self)).run
+      if parent
+        reply = children.create!(subject: options.fetch(:subject, subject),
+                                 body: options.fetch(:body, nil),
+                                 user: user,
+                                 recipients: [parent.user])
+        reply.send!
+      end
     end
-
 
     def receive!
       update(received_at: Time.zone.now)
@@ -97,6 +100,7 @@ module Discuss
       !sent?
     end
 
+    # passed in from the compose form
     def draft?
       self.draft == '1'
     end

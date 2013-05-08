@@ -13,12 +13,9 @@ module Discuss
 
     def create
       @message = Message.create(message_params.merge(user: discuss_current_user))
-
-      if @message.send!
-        redirect_to mailbox_path(:inbox), notice: 'Yay! Message sent'
-      else
-        render :new
-      end
+      @message.send!
+      notice = @message.sent? ? 'Yay!, Message sent' : 'Draft saved'
+      redirect_to mailbox_path(:inbox), notice: notice
     end
 
     def update

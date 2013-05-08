@@ -1,13 +1,15 @@
 class Discuss::MessageSender
-  attr_reader :message
+  attr_reader :message, :subject, :body, :recipients
 
-  delegate :subject,              to: :message
-  delegate :body,                 to: :message
-  delegate :id,                   to: :message
-  delegate :draft_recipient_ids,  to: :message
+  delegate :sender, to: :message
 
-  def initialize message
-    @message = message
+  # when sending: users: message.recipient_list
+  # when replying: users: message.sender
+  def initialize options
+    @message = options.fetch(:message)
+    @subject = options.fetch(:subject, message.subject)
+    @body = options.fetch(:body, message.body)
+    @recipients = options.fetch(:recipients, message.recipient_list)
   end
 
   def run
@@ -15,14 +17,20 @@ class Discuss::MessageSender
   end
 
   private
+  def set_as_sent
+    message.update_column(:sent_at, Time.zone.now)
+    message.update_column(:editable, false)
+  end
+
   def deliver!
-    message.recipient_list.each do |user|
-      deliver_to user
+    if recipients.any? && message.unsent?
+      set_as_sent
+      recipients.each { |user| deliver_to user }
     end
   end
 
   def deliver_to user
-    attrs = {subject: subject, body: body, parent_id: id, received_at: Time.zone.now, editable: false }
-    user.messages.create(attrs)
+    attrs = {subject: subject, body: body, user: user, received_at: Time.zone.now, editable: false }
+    message.children.create(attrs)
   end
 end
