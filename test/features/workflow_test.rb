@@ -16,7 +16,7 @@ class WorkFlowTest< FeatureTest
       fill_in 'Your message', with: "who's bringing what?"
       check 'Draft'
       click_on 'Send message'
-      #print page.html
+
       assert page.has_css?('div.notice')
       assert_equal 1, Discuss::Mailbox.new(@sender).drafts.count
       assert_equal 0, Discuss::Mailbox.new(@recipient).inbox.count
@@ -75,8 +75,25 @@ class WorkFlowTest< FeatureTest
         assert page.has_content?(@recipient.to_s)
       end
     end
-    it 'views a message'
-    it 'edits a draft'
+
+    it 'views a message' do
+      visit "/discuss/message/#{@message.id}"
+
+      within '.headers' do
+        assert page.has_content?(@message.sender)
+        assert page.has_content?('Recipients: bart simpsons')
+      end
+
+      within '.compose' do
+        assert page.has_xpath?("//form[@action='/discuss/message']")
+        refute page.has_content?('Recipients')
+      end
+    end
+
+    it 'edits a draft' do
+      visit "/discuss/message/#{@draft.id}"
+      #print page.html
+    end
     it 'cannot edit a received message'
     it 'replies'
   end

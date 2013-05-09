@@ -3,11 +3,11 @@
     %h2 Message
 
     %ul.headers
-      %li Subject: #{message.try(:subject)}
-      %li Sender: #{message.sender}
-      %li Date: #{message.created_at.to_date}
+      %li.subject Subject: #{message.try(:subject)}
+      %li.sender Sender: #{message.sender}
+      %li.sent_at Date: #{message.sent_at.to_date}
       - # Do we want recipient names to be links? or have any data attributes like the user.id?
-      %li Recipients: #{recipients_string(message.recipient_list)}
+      %li.recipients Recipients: #{recipients_string(message.recipient_list)}
 
     .body= message.body
 
