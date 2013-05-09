@@ -4,32 +4,39 @@ We have a table discuss users that will be used to populate the recipients field
 We are not creating new users via recipients since the user need to exist and be logged in in order to view her messages.
 
 If for example we have two users: Batman and Robin and Batman sends a message to Robin. What will be created are two objects:
-1. A Message object where(discuss_user: Batman, sent_at: Time.zone.now)
-2. A second MEssage object where(dicuss_user: Robin, received_at: Time.zone.now)
+
+1. A Message object `where(discuss_user: Batman, sent_at: Time.zone.now)`
+2. A second Message object `where(dicuss_user: Robin, received_at: Time.zone.now)`
 
 When Robin logs in, she can view this message in her inbox.
-The inbox view user Mailbox.new(Robin).inbox
+The inbox view uses `Mailbox.new(Robin).inbox`
 
-Batman's sent messages view will use a similar query:
-Mailbox.new(user).outbox
+Batman's sent messages view will use a similar query: `Mailbox.new(Batman).outbox`
 
 
 If no recipients are entered, the message will be saved as draft.
-Messages by default are sent as draft until they are delivered
+Messages by default are saved as draft until they are delivered
 
 ## Setup
 
-add the gem to your Gemfile.
+Add the gem to your Gemfile.
 
 ```ruby
 gem 'discuss'
 ```
 
-get the migrations
+Get the migrations
 
 ```shell
 rake discuss:install:migrations
 ```
+
+And run them on in your app
+
+```shell
+rake db:migrate
+```
+
 
 ## DSL
 
@@ -51,7 +58,7 @@ rake discuss:install:migrations
 @message.reply!(body: 'awesome', subject: 'adjusted subject') # => replies to sender. only :body is really needed
 
 # With conversation:
-@conversation = Discuss::Conversation.new(@message, user) # => user defaults to message.owner if not passed through
+@conversation = Discuss::Conversation.new(@message, user) # => user defaults to message.user if not passed through
 @conversation.all # => shows all the messages, owned or not by the user
 @conversation.for_user # => shows only the messages the user owns
 @conversation.trash_conversation! # => trashes messages in the conversation that the user owns
