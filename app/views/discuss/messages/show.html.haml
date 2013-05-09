@@ -6,12 +6,16 @@
       %li Subject: #{message.try(:subject)}
       %li Sender: #{message.sender}
       %li Date: #{message.created_at.to_date}
-      %li Recipients #{message.recipients.collect(&:name)}
+      - # Do we want recipient names to be links? or have any data attributes like the user.id?
+      %li Recipients: #{recipients_string(message.recipient_list)}
 
     .body= message.body
 
-  - # form needs to be different because we only have one person to reply to
   .compose.reply
     %h3 Reply
-    = render 'form'
+    = simple_form_for @message.children.new do |f|
+      = f.input :subject, input_html: { value: "Re: #{@message.subject}" }
+      = f.input :body, required: false, label: 'Your message'
+      = f.input :draft, as: :boolean
 
+      = f.submit 'Reply'
