@@ -104,8 +104,10 @@ rake test
 * Markdown styling for message body
 * Display conversations
 * Mailers
-* Config options to disbale or enable mailers
+* Config options to disable or enable mailers
 * Move message delivery and mailers to a background job
 * Generator to copy views to parent project for customisation
+* Keep draft of unsaved message in local storage
+* Add some basic styles
 
 This project rocks and uses [MIT-LICENSE](MIT-LICENSE).
