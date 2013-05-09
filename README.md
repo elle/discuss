@@ -21,45 +21,45 @@ Messages by default are sent as draft until they are delivered
 
 add the gem to your Gemfile.
 
-```
-  gem 'discuss'
+```ruby
+gem 'discuss'
 ```
 
 get the migrations
 
-```
-  rake discuss:install:migrations
+```shell
+rake discuss:install:migrations
 ```
 
 ## DSL
 
-```
-  @mailbox = Mailbox.new(user)
-  @mailbox.inbox
-  @mailbox.outbox
-  @mailbox.drafts
-  @mailbox.trash
+```ruby
+@mailbox = Mailbox.new(user)
+@mailbox.inbox
+@mailbox.outbox
+@mailbox.drafts
+@mailbox.trash
 
-  @mailbox.empty_trash! # => deletes all messages that are already trashed
+@mailbox.empty_trash! # => deletes all messages that are already trashed
 
-  @message = User.message.create(body: 'lorem ipsum', recipients: [@user1, @user2]) # => creates a draft
-  @message.send! # delivers a message
+@message = User.message.create(body: 'lorem ipsum', recipients: [@user1, @user2]) # => creates a draft
+@message.send! # delivers a message
 
-  @message.trash!   # => moves the message to the trash
-  @message.delete!  # => removes message from all views
+@message.trash!   # => moves the message to the trash
+@message.delete!  # => removes message from all views
 
-  @message.reply!(body: 'awesome', subject: 'adjusted subject') # => replies to sender. only :body is really needed
+@message.reply!(body: 'awesome', subject: 'adjusted subject') # => replies to sender. only :body is really needed
 
-  # With conversation:
-  @conversation = Discuss::Conversation.new(@message, user) # => user defaults to message.owner if not passed through
-  @conversation.all # => shows all the messages, owned or not by the user
-  @conversation.for_user # => shows only the messages the user owns
-  @conversation.trash_conversation! # => trashes messages in the conversation that the user owns
+# With conversation:
+@conversation = Discuss::Conversation.new(@message, user) # => user defaults to message.owner if not passed through
+@conversation.all # => shows all the messages, owned or not by the user
+@conversation.for_user # => shows only the messages the user owns
+@conversation.trash_conversation! # => trashes messages in the conversation that the user owns
 ```
 
 ## User class
 
-The User class has the following two methods:
+The User class has the following method:
 
 ```
   def to_s
@@ -78,23 +78,24 @@ If you wish to actually send out an email, then the User class will also need an
 The gem uses a current_user helper method that is usally provided with most authentication systems.
 If you wish to use your own class, override our `current_discuss_user` method to use your own class.
 
-```
-  class ApplicationController < ActionController::Base
+```ruby
+class ApplicationController < ActionController::Base
 
     private
     def discuss_current_user
       # Your own implementation
     end
   end
+end
 ```
 
 
 ## Running the tests
 
-```
-  rake db:create && rake db:migrate
-  rake db:migrate RAILS_ENV=test
-  rake test
+```shell
+rake db:create && rake db:migrate
+rake db:migrate RAILS_ENV=test
+rake test
 ```
 
 ## TODO
@@ -107,4 +108,4 @@ If you wish to use your own class, override our `current_discuss_user` method to
 * Move message delivery and mailers to a background job
 * Generator to copy views to parent project for customisation
 
-This project rocks and uses MIT-LICENSE.
+This project rocks and uses [MIT-LICENSE](MIT-LICENSE).
