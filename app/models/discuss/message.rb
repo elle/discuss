@@ -94,6 +94,10 @@ module Discuss
       end
     end
 
+    def uneditable?
+      !editable?
+    end
+
     def unsent?
       !sent?
     end

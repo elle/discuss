@@ -9,6 +9,7 @@ module Discuss
     end
 
     def show
+      redirect_to edit_message_path(message) if message.unsent?
     end
 
     def create
@@ -16,6 +17,10 @@ module Discuss
       @message.send!
       notice = @message.sent? ? 'Yay!, Message sent' : 'Draft saved'
       redirect_to mailbox_path(:inbox), notice: notice
+    end
+
+    def edit
+      redirect_to message unless message.unsent?
     end
 
     def update

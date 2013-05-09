@@ -90,8 +90,18 @@ class WorkFlowTest< FeatureTest
       end
     end
 
-    it 'edits a draft' do
+    it 'redirects to show view if uneditable?' do
+      visit "/discuss/message/#{@message.id}/edit"
+      assert_equal "/discuss/message/#{@message.id}", current_path
+    end
+
+    it 'redirects to edit view if unsent?' do
       visit "/discuss/message/#{@draft.id}"
+      assert_equal "/discuss/message/#{@draft.id}/edit", current_path
+    end
+
+    it 'edits a draft' do
+      visit "/discuss/message/#{@draft.id}/edit"
       #print page.html
     end
     it 'cannot edit a received message'
