@@ -76,9 +76,13 @@ class WorkFlowTest< FeatureTest
       end
     end
 
-    it 'moves a message to trash'
-
-    it 'deleted a message'
+    it 'moves a message to trash' do
+      visit "/discuss/message/#{@message.id}"
+      click_on 'Move to trash'
+      assert page.has_content?('Message moved to trash')
+      assert_equal 0, Discuss::Mailbox.new(@sender).outbox.count
+      assert_equal 1, Discuss::Mailbox.new(@sender).trash.count
+    end
 
     it 'empties trash'
 

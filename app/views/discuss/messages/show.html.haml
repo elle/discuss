@@ -11,6 +11,9 @@
 
     .body= message.body
 
+  = simple_form_for @message, url: message_trash_path(@message), method: :post do |f|
+    = f.submit 'Move to trash'
+
   - if message.received?
     .compose.reply
       %h3 Reply

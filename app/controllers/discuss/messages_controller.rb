@@ -32,8 +32,14 @@ module Discuss
       send_message
     end
 
+    def trash
+      @message = Message.find(params[:message_id])
+      @message.trash!
+      redirect_to mailbox_path(:inbox), notice: 'Message moved to trash'
+    end
+
     def destroy
-      message.delete! # [e] This is not accurate, it needs to handle if message is sent or received here
+      message.delete!
       redirect_to mailbox_path(:inbox), notice: 'Message deleted'
     end
 
