@@ -76,18 +76,29 @@ class WorkFlowTest< FeatureTest
       end
     end
 
-    it 'can empty trash'
+    it 'moves a message to trash'
 
-    it 'views a message' do
+    it 'deleted a message'
+
+    it 'empties trash'
+
+    it 'views a sent message' do
       visit "/discuss/message/#{@message.id}"
 
       within '.headers' do
         assert page.has_content?(@message.sender)
         assert page.has_content?('Recipients: bart simpsons')
       end
+    end
 
+    it 'views a recieved message' do
+      message = Discuss::Mailbox.new(@recipient).inbox.first
+      message.reply! body: 'first reply'
+      recieved_message = Discuss::Mailbox.new(@sender).inbox.last
+
+      visit "/discuss/message/#{recieved_message.id}"
       within '.compose' do
-        assert page.has_xpath?("//form[@action='/discuss/message']")
+        assert page.has_xpath?("//form[@action='/discuss/message/#{recieved_message.id}/reply']")
         refute page.has_content?('Recipients')
       end
     end
@@ -131,12 +142,12 @@ class WorkFlowTest< FeatureTest
     end
 
     it 'replies' do
-      received_message = Discuss::Mailbox.new(@recipient).inbox.first
-      received_message.reply! body: 'first reply'
-      first_reply = Discuss::Mailbox.new(@sender).inbox.last
+      message = Discuss::Mailbox.new(@recipient).inbox.first
+      message.reply! body: 'first reply'
+      recieved_message = Discuss::Mailbox.new(@sender).inbox.last
 
-      visit "/discuss/message/#{first_reply.id}"
-      print page.html
+      visit "/discuss/message/#{recieved_message.id}"
+
       within '.compose' do
         fill_in 'Your message', with: 'This is what I think on your previous message'
         click_on 'Reply'
