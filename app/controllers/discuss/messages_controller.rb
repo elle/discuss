@@ -14,9 +14,7 @@ module Discuss
 
     def create
       @message = Message.create(message_params.merge(user: discuss_current_user))
-      @message.send!
-      notice = @message.sent? ? 'Yay!, Message sent' : 'Draft saved'
-      redirect_to mailbox_path(:inbox), notice: notice
+      send_message
     end
 
     def edit
@@ -25,7 +23,7 @@ module Discuss
 
     def update
       message.update(message_params)
-      redirect_to mailbox_path(:inbox)
+      send_message
     end
 
     def destroy
@@ -41,6 +39,12 @@ module Discuss
 
     def message_params
       params.require(:message).permit(:subject, :body, :draft, draft_recipient_ids: [])
+    end
+
+    def send_message
+      message.send!
+      notice = message.sent? ? 'Yay!, Message sent' : 'Draft saved'
+      redirect_to mailbox_path(:inbox), notice: notice
     end
   end
 end

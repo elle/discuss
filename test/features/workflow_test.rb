@@ -76,6 +76,8 @@ class WorkFlowTest< FeatureTest
       end
     end
 
+    it 'can empty trash'
+
     it 'views a message' do
       visit "/discuss/message/#{@message.id}"
 
@@ -100,11 +102,28 @@ class WorkFlowTest< FeatureTest
       assert_equal "/discuss/message/#{@draft.id}/edit", current_path
     end
 
+    it 'sends a draft' do
+      visit "/discuss/message/#{@draft.id}/edit"
+      fill_in 'Subject', with: 'great to go public'
+      fill_in 'Your message', with: 'not for my eyes only anymore'
+      click_on 'Send message'
+
+      assert page.has_css?('div.notice')
+      assert_equal 0, Discuss::Mailbox.new(@sender).drafts.count
+      assert_equal 1, Discuss::Mailbox.new(@lisa).inbox.count
+    end
+
     it 'edits a draft' do
       visit "/discuss/message/#{@draft.id}/edit"
-      #print page.html
+      fill_in 'Subject', with: 'not yet'
+      check 'Draft'
+      click_on 'Send message'
+
+      assert page.has_css?('div.notice')
+      assert_equal 1, Discuss::Mailbox.new(@sender).drafts.count
+      assert_equal 0, Discuss::Mailbox.new(@lisa).inbox.count
     end
-    it 'cannot edit a received message'
+
     it 'replies'
   end
 end
