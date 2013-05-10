@@ -84,7 +84,15 @@ class WorkFlowTest< FeatureTest
       assert_equal 1, Discuss::Mailbox.new(@sender).trash.count
     end
 
-    it 'empties trash'
+    it 'empties trash' do
+      @message.trash!
+      assert_equal 1, Discuss::Mailbox.new(@sender).trash.count
+
+      visit '/discuss/mailbox/trash'
+      click_on 'Empty trash'
+      assert page.has_content?('Trash has been emptied')
+      assert_equal 0, Discuss::Mailbox.new(@sender).trash.count
+    end
 
     it 'views a sent message' do
       visit "/discuss/message/#{@message.id}"

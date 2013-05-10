@@ -17,3 +17,6 @@
               %td
                 = message.created_at.to_date
 
+    - if mailbox_name == 'trash'
+      = form_tag empty_trash_path do
+        = submit_tag 'Empty trash'

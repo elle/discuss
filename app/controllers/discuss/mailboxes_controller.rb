@@ -8,6 +8,11 @@ module Discuss
       @messages = Mailbox.new(discuss_current_user).send mailbox_name
     end
 
+    def empty_trash
+      Mailbox.new(discuss_current_user).empty_trash!
+      redirect_to mailbox_path(:inbox), notice: 'Trash has been emptied'
+    end
+
     private
     def check_mailbox_params
       redirect_to mailbox_path(:inbox) unless valid_mailbox?
