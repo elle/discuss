@@ -9,12 +9,18 @@ module Discuss
     end
 
     def show
-      redirect_to edit_message_path(message) if message.unsent?
+      redirect_to edit_message_path(message) unless message.received? || message.sent?
     end
 
     def create
       @message = Message.create(message_params.merge(user: discuss_current_user))
       send_message
+    end
+
+    def reply
+      @message = Message.find(params[:message_id])
+      @message.reply! message_params.merge(user: discuss_current_user)
+      redirect_to mailbox_path(:inbox), notice: 'Reply sent'
     end
 
     def edit

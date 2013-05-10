@@ -124,7 +124,28 @@ class WorkFlowTest< FeatureTest
       assert_equal 0, Discuss::Mailbox.new(@lisa).inbox.count
     end
 
-    it 'replies'
+    it 'does not see reply form if I sent the message' do
+      assert_equal @sender, @message.sender
+      visit "/discuss/message/#{@message.id}"
+      refute page.has_css?('.compose.reply')
+    end
+
+    it 'replies' do
+      received_message = Discuss::Mailbox.new(@recipient).inbox.first
+      received_message.reply! body: 'first reply'
+      first_reply = Discuss::Mailbox.new(@sender).inbox.last
+
+      visit "/discuss/message/#{first_reply.id}"
+      print page.html
+      within '.compose' do
+        fill_in 'Your message', with: 'This is what I think on your previous message'
+        click_on 'Reply'
+      end
+
+      assert page.has_css?('div.notice')
+      assert_equal 2, Discuss::Mailbox.new(@sender).outbox.count
+      assert_equal 2, Discuss::Mailbox.new(@recipient).inbox.count
+    end
   end
 end
 

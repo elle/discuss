@@ -5,17 +5,17 @@
     %ul.headers
       %li.subject Subject: #{message.try(:subject)}
       %li.sender Sender: #{message.sender}
-      %li.sent_at Date: #{message.sent_at.to_date}
+      %li.sent_at Date: #{message.sent_date.to_date}
       - # Do we want recipient names to be links? or have any data attributes like the user.id?
       %li.recipients Recipients: #{recipients_string(message.recipient_list)}
 
     .body= message.body
 
-  .compose.reply
-    %h3 Reply
-    = simple_form_for @message.children.new do |f|
-      = f.input :subject, input_html: { value: "Re: #{@message.subject}" }
-      = f.input :body, required: false, label: 'Your message'
-      = f.input :draft, as: :boolean
-
-      = f.submit 'Reply'
+  - if message.received?
+    .compose.reply
+      %h3 Reply
+      = simple_form_for @message, url: message_reply_path(@message), method: :post do |f|
+        = f.input :subject, input_html: { value: "Re: #{@message.subject}" }
+        = f.input :body, required: false, label: 'Your message'
+        = f.input :draft, as: :boolean
+        = f.submit 'Reply'

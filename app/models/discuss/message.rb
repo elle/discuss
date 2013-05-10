@@ -107,6 +107,10 @@ module Discuss
       self.draft == '1'
     end
 
+    def sent_date
+      sent_at || received_at
+    end
+
     private
     def lock_down_attributes
       return if editable?
