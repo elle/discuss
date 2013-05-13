@@ -96,6 +96,15 @@ class ApplicationController < ActionController::Base
 end
 ```
 
+## Configuring views
+
+Since Discuss is an engine, all its views are packaged inside the gem. These views will help you get started and their styles are namespaced within `%section#discuss`
+
+If you wish to customise the views, you just need to invoke the following generator, and it will copy all views to your application:
+
+```shell
+rails generate discuss:views
+```
 
 ## Running the tests
 
@@ -107,14 +116,12 @@ rake test
 
 ## TODO
 
-* Views
+* Add some basic styles
 * Markdown styling for message body
 * Display conversations
 * Mailers
 * Config options to disable or enable mailers
 * Move message delivery and mailers to a background job
-* Generator to copy views to parent project for customisation
 * Keep draft of unsaved message in local storage
-* Add some basic styles
 
 This project rocks and uses [MIT-LICENSE](MIT-LICENSE).
