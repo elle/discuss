@@ -55,7 +55,7 @@ module Discuss
 
     def send_message
       message.send!
-      notice = message.sent? ? 'Yay!, Message sent' : 'Draft saved'
+      notice = message.sent? ? 'Yay! Message sent' : 'Draft saved'
       redirect_to mailbox_path(:inbox), notice: notice
     end
   end
