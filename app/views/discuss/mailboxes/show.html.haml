@@ -1,7 +1,9 @@
 %section#discuss.mailboxes
   %h2= mailbox_name.humanize
 
-  = pluralize(@messages.size, 'message')
+  .summary= pluralize(@messages.size, 'message')
+
+  = render 'discuss/shared/nav'
 
   %section.messages
     - if @messages.any?

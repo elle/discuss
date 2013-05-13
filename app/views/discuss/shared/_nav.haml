@@ -1,0 +1,7 @@
+.nav
+  %ul
+    %li= link_to 'Compose', compose_path
+    %li= link_to 'Inbox', mailbox_path(:inbox)
+    %li= link_to 'Outbox', mailbox_path(:outbox)
+    %li= link_to 'Drafts', mailbox_path(:drafts)
+    %li= link_to 'Trash', mailbox_path(:trash)
