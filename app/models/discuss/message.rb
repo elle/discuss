@@ -45,7 +45,7 @@ module Discuss
     end
 
     def recipients
-      children
+      sent? ? children.collect(&:user) : parent.recipients
     end
 
     def recipients= users

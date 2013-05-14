@@ -9,7 +9,7 @@
       %li.sender Sender: #{message.sender}
       %li.sent_at Date: #{message.sent_date.to_date}
       - # Do we want recipient names to be links? or have any data attributes like the user.id?
-      %li.recipients Recipients: #{recipients_string(message.recipient_list)}
+      %li.recipients Recipients: #{message.recipients.join(', ')}
 
     .body= message.body
 
@@ -23,6 +23,6 @@
         %h3 Reply
         = simple_form_for @message, url: message_reply_path(@message), method: :post do |f|
           = f.input :subject, input_html: { value: "Re: #{@message.subject}" }
-          = f.input :body, required: false, label: 'Your message'
+          = f.input :body, required: false, label: 'Your message', input_html: { value: '' }
           = f.input :draft, as: :boolean
           = f.submit 'Reply'
