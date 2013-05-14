@@ -11,14 +11,14 @@
         %tbody
           - @messages.each do |message|
             %tr[message]
-              %td
+              %td.user
                 = link_to message_person(mailbox_name, message), message
-              %td
+              %td.preview
                 = link_to message.try(:subject), message
                 = link_to truncate(message.body, length: 50), message
-              %td
+              %td.sent_at
                 = message.created_at.to_date
 
-    - if mailbox_name == 'trash'
-      = form_tag empty_trash_path do
-        = submit_tag 'Empty trash'
+      - if mailbox_name == 'trash'
+        = form_tag empty_trash_path do
+          = submit_tag 'Empty trash'
