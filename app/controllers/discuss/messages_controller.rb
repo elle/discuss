@@ -17,10 +17,15 @@ module Discuss
       send_message
     end
 
+    # [e] avoiding validation exception. Should be done nicer
     def reply
       @message = Message.find(params[:message_id])
-      @message.reply! message_params.merge(user: discuss_current_user)
-      redirect_to mailbox_path(:inbox), notice: 'Reply sent'
+      if params[:message][:body]
+        @message.reply! message_params.merge(user: discuss_current_user)
+        redirect_to mailbox_path(:inbox), notice: 'Reply sent'
+      else
+        redirect_to message, notice: "Don't you want to say something?"
+      end
     end
 
     def edit
