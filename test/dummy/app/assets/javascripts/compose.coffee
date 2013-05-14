@@ -18,4 +18,4 @@ class Discuss.Compose
       @checkbox.attr('checked', 'checked')
 
 $ ->
-  $('form#new_message').each -> $(@).data('composable', new Discuss.Compose(@))
+  $('.compose form').each -> $(@).data('composable', new Discuss.Compose(@))
