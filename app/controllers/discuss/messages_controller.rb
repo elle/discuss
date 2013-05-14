@@ -13,8 +13,12 @@ module Discuss
     end
 
     def create
-      @message = Message.create(message_params.merge(user: discuss_current_user))
-      send_message
+      @message = Message.new(message_params.merge(user: discuss_current_user))
+      if @message.save
+        send_message
+      else
+        render :new
+      end
     end
 
     # [e] avoiding validation exception. Should be done nicer
@@ -24,7 +28,7 @@ module Discuss
         @message.reply! message_params.merge(user: discuss_current_user)
         redirect_to mailbox_path(:inbox), notice: 'Reply sent'
       else
-        redirect_to message, notice: "Don't you want to say something?"
+        redirect_to message, alert: "Don't you want to say something?"
       end
     end
 
