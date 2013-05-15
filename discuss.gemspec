@@ -7,9 +7,9 @@ require 'discuss/version'
 Gem::Specification.new do |s|
   s.name        = 'discuss'
   s.version     = Discuss::VERSION
-  s.authors     = ['Elle Meredith', 'Garrett Heinlen', 'Nick Sutterer']
+  s.authors     = ['Elle Meredith', 'Garrett Heinlen']
   s.email       = ['elle.meredith@blake.com.au']
-  s.homepage    = 'http://labs.blake.com.au'
+  s.homepage    = 'http://github.com/elle/discuss'
   s.summary     = 'Messaging engine'
   s.description = 'Messaging engine'
 
