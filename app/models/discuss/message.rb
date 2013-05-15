@@ -56,6 +56,17 @@ module Discuss
       draft_recipient_ids.reject(&:blank?).map {|id| User.find id}
     end
 
+    def mailbox
+      case
+      when sent? then :outbox
+      when received? then :inbox
+      when !new_record? && unsent? then :drafts
+      when trashed? then :trash
+      else
+        :compose
+      end
+    end
+
     def send!
       lock.synchronize do
         Discuss::MessageSender.new(self).run unless draft?

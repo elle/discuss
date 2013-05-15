@@ -1,4 +1,4 @@
-%section#discuss.mailboxes
+%section#discuss(class="mailboxes #{mailbox_name}")
   %h2= mailbox_name.humanize
 
   .summary= pluralize(@messages.size, 'message')
@@ -12,10 +12,10 @@
           - @messages.each do |message|
             %tr[message]
               %td.user
-                = link_to message_person(mailbox_name, message), message
+                = link_to message_person(mailbox_name, message), mailbox_message_path(message.mailbox, message)
               %td.preview
-                = link_to message.try(:subject), message
-                = link_to truncate(message.body, length: 50), message
+                = link_to message.try(:subject), mailbox_message_path(message.mailbox, message)
+                = link_to truncate(message.body, length: 50), mailbox_message_path(message.mailbox, message)
               %td.sent_at
                 = message.created_at.to_date
 

@@ -1,7 +1,8 @@
-%section#discuss
+%section#discuss(class = "#{mailbox_name}")
+  %h2= mailbox_name.humanize
+  = render 'discuss/shared/nav'
 
-  .compose
-    %h2 Compose
+  .compose.message
     = simple_form_for @message do |f|
       - if @message.errors.any?
         %p.errors This message has #{pluralize(@message.errors.count, 'error')}

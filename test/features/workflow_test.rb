@@ -109,7 +109,7 @@ class WorkFlowTest< FeatureTest
       recieved_message = Discuss::Mailbox.new(@sender).inbox.last
 
       visit "/discuss/message/#{recieved_message.id}"
-      within '.compose' do
+      within 'div.compose' do
         assert page.has_xpath?("//form[@action='/discuss/message/#{recieved_message.id}/reply']")
         refute page.has_content?('Recipients')
       end
@@ -160,7 +160,7 @@ class WorkFlowTest< FeatureTest
 
       visit "/discuss/message/#{recieved_message.id}"
 
-      within '.compose' do
+      within 'div.compose' do
         fill_in 'Your message', with: 'This is what I think on your previous message'
         click_on 'Reply'
       end

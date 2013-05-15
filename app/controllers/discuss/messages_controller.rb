@@ -67,5 +67,10 @@ module Discuss
       notice = message.sent? ? 'Yay! Message sent' : 'Draft saved'
       redirect_to mailbox_path(:inbox), notice: notice
     end
+
+    def mailbox_name
+      params[:mailbox] || message.mailbox.to_s
+    end
+    helper_method :mailbox_name
   end
 end

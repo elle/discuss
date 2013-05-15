@@ -10,5 +10,6 @@ Discuss::Engine.routes.draw do
 
   post 'mailbox/empty_trash', to: 'mailboxes#empty_trash', as: :empty_trash
   get 'mailbox/:mailbox', to: 'mailboxes#show', as: :mailbox
+  get 'mailbox/:mailbox/:id', to: 'messages#show', as: :mailbox_message
 
 end

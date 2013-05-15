@@ -1,5 +1,5 @@
-%section#discuss
-  %h2 Message
+%section#discuss(class = "#{mailbox_name}")
+  %h2= mailbox_name.humanize
 
   = render 'discuss/shared/nav'
 
