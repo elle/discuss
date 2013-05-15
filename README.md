@@ -144,6 +144,7 @@ rake test
 * Review the helper methods on User
 * Chosen recipients field: ajax request to search for users, and display users by name or email (incase name is missing)
 * Markdown styling for message body
+* Implement read! functionality
 * Keep draft of unsaved message in local storage
 * Display conversations
 * Mailers
