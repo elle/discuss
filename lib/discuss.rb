@@ -1,7 +1,4 @@
 require 'discuss/engine'
+require 'discuss/models/discussable'
 
-module Discuss
-  module Models
-    autoload :Discussable, 'discuss/models/discussable'
-  end
-end
+ActiveRecord::Base.extend Discuss::Models::Discussable
