@@ -1,5 +1,3 @@
-//= require jquery
-//= require jquery_ujs
-//= require chosen.jquery
-//= require discuss
+//= require discuss/chosen.jquery
+//= require discuss/discuss
 //= require_tree .
