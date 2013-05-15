@@ -4,8 +4,7 @@ module Discuss
 
     private
     def discuss_current_user
-      User.first
-      #raise 'Must override me' unless current_user
+      raise 'Must override me' unless current_user
     end
     helper_method :discuss_current_user
   end
