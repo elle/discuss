@@ -15,7 +15,7 @@ Batman's sent messages view will use a similar query: `Mailbox.new(Batman).outbo
 
 
 If no recipients are entered, the message will be saved as draft.
-Messages by default are saved as draft until they are delivered
+Messages by default are saved as draft until they are delivered (#send!).
 
 ## Setup
 
@@ -37,6 +37,47 @@ And run them on in your app
 rake db:migrate
 ```
 
+Add the following to `config/routes.rb`:
+
+```ruby
+mount Discuss::Engine, :at => '/messages'
+```
+
+Define a `current_user` in your `application_controller.rb`:
+
+```ruby
+class ApplicationController < ActionController::Base
+
+    private
+    def current_user
+      # Your own implementation
+    end
+  end
+end
+```
+
+Add the following to `user.rb`:
+
+```ruby
+class User < ActiveRecord::Base
+  acts_as_discussable
+end
+```
+
+And lastly add the following to your assets files:
+
+
+```ruby
+#app/assets/stylesheets/application.scss
+@import "discuss/application";
+
+#app/assets/javascripts/application.js
+//= require discuss/application
+```
+
+If you have problems with your current routes, you might need to add `main_app` to the beginning of your routes.
+
+And in our case, all the messages interface should be available at `/messages`
 
 ## DSL
 
@@ -79,26 +120,9 @@ But you can override either method with your implementation.
 
 If you wish to actually send out an email, then the User class will also need an `email`.
 
-
-## Override current user
-
-The gem uses a current_user helper method that is usally provided with most authentication systems.
-If you wish to use your own class, override our `current_discuss_user` method to use your own class.
-
-```ruby
-class ApplicationController < ActionController::Base
-
-    private
-    def discuss_current_user
-      # Your own implementation
-    end
-  end
-end
-```
-
 ## Configuring views
 
-Since Discuss is an engine, all its views are packaged inside the gem. These views will help you get started and their styles are namespaced within `%section#discuss`
+Since Discuss is an engine, all its views are packaged inside the gem. These views will help you get started.
 
 If you wish to customise the views, you just need to invoke the following generator, and it will copy all views to your application:
 
@@ -116,6 +140,8 @@ rake test
 
 ## TODO
 
+* Use locale yml files for the flash messages
+* Review the helper methods on User
 * Chosen recipients field: ajax request to search for users, and display users by name or email (incase name is missing)
 * Markdown styling for message body
 * Keep draft of unsaved message in local storage
