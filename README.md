@@ -116,7 +116,6 @@ rake test
 
 ## TODO
 
-* Add some basic styles
 * Markdown styling for message body
 * Display conversations
 * Mailers

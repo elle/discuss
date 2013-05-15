@@ -3,6 +3,7 @@ require_dependency 'discuss/application_controller'
 module Discuss
   class MessagesController < ApplicationController
     before_action :message, only: [:show, :update, :destroy]
+    before_action :can_view_message, only: [:show, :edit, :destroy]
 
     def new
       @message = discuss_current_user.messages.new
@@ -72,5 +73,13 @@ module Discuss
       params[:mailbox] || message.mailbox.to_s
     end
     helper_method :mailbox_name
+
+    def can_view_message
+      redirect_to mailbox_path(:inbox), notice: 'Unauthorised!' unless mine?
+    end
+
+    def mine?
+      message.user == discuss_current_user
+    end
   end
 end

@@ -42,6 +42,14 @@ class WorkFlowTest< FeatureTest
       @outbox = Discuss::Mailbox.new(@sender).outbox
     end
 
+    it 'redirects to inbox if message is not mine' do
+      message = Discuss::Message.last
+      visit "/discuss/mailbox/inbox/#{message.id}"
+      assert_equal "/discuss/mailbox/inbox", current_path
+      refute page.has_content?(message.body)
+      refute page.has_css?('.reply')
+    end
+
     it 'sees an outbox' do
       assert_equal 1, @outbox.count
 
