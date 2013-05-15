@@ -116,11 +116,12 @@ rake test
 
 ## TODO
 
+* Chosen recipients field: ajax request to search for users, and display users by name or email (incase name is missing)
 * Markdown styling for message body
+* Keep draft of unsaved message in local storage
 * Display conversations
 * Mailers
 * Config options to disable or enable mailers
 * Move message delivery and mailers to a background job
-* Keep draft of unsaved message in local storage
 
 This project rocks and uses [MIT-LICENSE](MIT-LICENSE).
