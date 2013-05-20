@@ -10,7 +10,8 @@ module Discuss
 
     def empty_trash
       Mailbox.new(discuss_current_user).empty_trash!
-      redirect_to mailbox_path(:inbox), notice: 'Trash has been emptied'
+      set_flash_message :notice, :trash_emptied
+      redirect_to mailbox_path(:inbox)
     end
 
     private

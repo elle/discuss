@@ -1,0 +1,12 @@
+en:
+  discuss:
+    mailboxes:
+      trash_emptied: "Trash has been emptied"
+    messages:
+      deleted: "Message deleted"
+      invalid: "Don't you want to say something?"
+      replied: "Reply sent"
+      saved: "Draft saved"
+      sent: "Yay! Message sent"
+      trashed: "Message moved to trash"
+      unauthorised: "Unauthorised!"

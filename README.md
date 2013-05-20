@@ -140,7 +140,6 @@ rake test
 
 ## TODO
 
-* Use locale yml files for the flash messages
 * Review the helper methods on User
 * Chosen recipients field: ajax request to search for users, and display users by name or email (incase name is missing)
 * Markdown styling for message body

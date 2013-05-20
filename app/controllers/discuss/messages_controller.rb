@@ -27,9 +27,11 @@ module Discuss
       @message = Message.find(params[:message_id])
       if params[:message][:body]
         @message.reply! message_params.merge(user: discuss_current_user)
-        redirect_to mailbox_path(:inbox), notice: 'Reply sent'
+        set_flash_message :notice, :replied
+        redirect_to mailbox_path(:inbox)
       else
-        redirect_to message, alert: "Don't you want to say something?"
+        set_flash_message :alert, :invalid
+        redirect_to message
       end
     end
 
@@ -45,12 +47,14 @@ module Discuss
     def trash
       @message = Message.find(params[:message_id])
       @message.trash!
-      redirect_to mailbox_path(:inbox), notice: 'Message moved to trash'
+      set_flash_message :notice, :trashed
+      redirect_to mailbox_path(:inbox)
     end
 
     def destroy
       message.delete!
-      redirect_to mailbox_path(:inbox), notice: 'Message deleted'
+      set_flash_message :notice, :deleted
+      redirect_to mailbox_path(:inbox)
     end
 
     private
@@ -65,7 +69,7 @@ module Discuss
 
     def send_message
       message.send!
-      notice = message.sent? ? 'Yay! Message sent' : 'Draft saved'
+      notice = message.sent? ? set_flash_message(:notice, :sent) : set_flash_message(:notice, :saved)
       redirect_to mailbox_path(:inbox), notice: notice
     end
 
@@ -75,7 +79,10 @@ module Discuss
     helper_method :mailbox_name
 
     def can_view_message
-      redirect_to mailbox_path(:inbox), notice: 'Unauthorised!' unless mine?
+      unless mine?
+        set_flash_message :notice, :unauthorised
+        redirect_to mailbox_path(:inbox)
+      end
     end
 
     def mine?

@@ -7,5 +7,15 @@ module Discuss
       current_user
     end
     helper_method :discuss_current_user
+
+    # For example `set_flash_message :notice, :trash_emptied`
+    def set_flash_message(key, kind, options = {})
+      message = find_message(kind, options)
+      flash[key] = message if message.present?
+    end
+
+    def find_message(kind, options = {})
+      I18n.t("discuss.#{controller_name}.#{kind}", options)
+    end
   end
 end
