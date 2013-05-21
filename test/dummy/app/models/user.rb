@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   validates :email, presence: true
 
   def to_s
-    full_name
+    prefix
   end
 
   def full_name
@@ -13,10 +13,6 @@ class User < ActiveRecord::Base
   end
 
   def prefix
-    try(:full_name) || email
-  end
-
-  def message_title
-    "#{prefix} <#{email}>"
+    "#{full_name} #{email}"
   end
 end

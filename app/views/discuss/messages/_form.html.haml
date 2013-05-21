@@ -7,12 +7,8 @@
       - if @message.errors.any?
         %p.errors This message has #{pluralize(@message.errors.count, 'error')}
 
-      - # TODO review User.all query
-      - # TODO if no first_name and last_name, display user's email
-      = f.input :draft_recipient_ids, collection: User.all.reject{|u| u == discuss_current_user }, input_html: {class: 'chosen', multiple: true}, label: 'Recipients'
+      = f.input :draft_recipient_ids, collection: discuss_recipients, input_html: {class: 'chosen', multiple: true}, label: 'Recipients'
       = f.input :subject
       = f.input :body, required: false, label: 'Your message'
       = f.input :draft, as: :boolean
-
       = f.submit 'Send message'
-

@@ -111,14 +111,28 @@ The User class has the following method:
 
 ```
   def to_s
-    full_name
+    prefix
   end
 ```
 
-In the gem, these two methods rely on having `first_name`, `last_name` attributes.
+In the gem, these two methods rely on having `first_name`, `last_name` or `email` attributes.
 But you can override either method with your implementation.
 
 If you wish to actually send out an email, then the User class will also need an `email`.
+
+## Override the recipients collection
+
+If you wish to be able to send messages only to people in your company, override the `discuss_recipients` helper method in your `application_controller.rb`.
+
+```ruby
+class ApplicationController < ActionController::Base
+  private
+  def discuss_recipients
+    @recipients = current_company.users.reject { |u| u == discuss_current_user }
+  end
+  helper_method :discuss_recipients
+end
+```
 
 ## Configuring views
 
@@ -140,8 +154,6 @@ rake test
 
 ## TODO
 
-* Review the helper methods on User
-* Chosen recipients field: ajax request to search for users, and display users by name or email (incase name is missing)
 * Markdown styling for message body
 * Implement read! functionality
 * Keep draft of unsaved message in local storage
