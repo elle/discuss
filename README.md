@@ -154,7 +154,6 @@ rake test
 
 ## TODO
 
-* Markdown styling for message body
 * Implement read! functionality
 * Keep draft of unsaved message in local storage
 * Display conversations

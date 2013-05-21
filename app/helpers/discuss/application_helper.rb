@@ -3,5 +3,9 @@ module Discuss
     def message_person(mailbox_name, message)
       mailbox_name == 'inbox' ? message.sender : message.recipient_list.join(', ')
     end
+
+    def markdown(text)
+      Redcarpet::Markdown.new(text).to_html.html_safe
+    end
   end
 end

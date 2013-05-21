@@ -11,7 +11,7 @@
       - # Do we want recipient names to be links? or have any data attributes like the user.id?
       %li.recipients Recipients: #{message.recipients.join(', ')}
 
-    .body= message.body
+    .body= markdown(message.body)
 
     - unless message.trashed?
       .move_to_trash
