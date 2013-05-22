@@ -10,6 +10,7 @@ module Discuss
     end
 
     def show
+      message.read! if message.received? || message.unread?
       redirect_to edit_message_path(message) unless message.received? || message.sent?
     end
 

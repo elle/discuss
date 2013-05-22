@@ -154,7 +154,7 @@ rake test
 
 ## TODO
 
-* Implement read! functionality
+* Add message attributes as classes
 * Keep draft of unsaved message in local storage
 * Display conversations
 * Mailers

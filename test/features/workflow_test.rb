@@ -121,6 +121,9 @@ class WorkFlowTest< FeatureTest
         assert page.has_xpath?("//form[@action='/discuss/message/#{recieved_message.id}/reply']")
         refute page.has_content?('Recipients')
       end
+
+      recieved_message.reload
+      assert recieved_message.read?
     end
 
     it 'redirects to show view if uneditable?' do

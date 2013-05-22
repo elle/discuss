@@ -105,6 +105,10 @@ module Discuss
       end
     end
 
+    def unread?
+      !read?
+    end
+
     def uneditable?
       !editable?
     end
