@@ -128,7 +128,7 @@ If you wish to be able to send messages only to people in your company, override
 class ApplicationController < ActionController::Base
   private
   def discuss_recipients
-    @recipients = current_company.users.reject { |u| u == discuss_current_user }
+    @discuss_recipients = current_company.users.reject { |u| u == discuss_current_user }
   end
   helper_method :discuss_recipients
 end

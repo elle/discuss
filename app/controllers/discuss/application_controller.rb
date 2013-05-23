@@ -8,10 +8,10 @@ module Discuss
     end
     helper_method :discuss_current_user
 
-    def discuss_recipients
-      @recipients = User.all.reject { |u| u == discuss_current_user }
+    def recipients
+      discuss_recipients ? discuss_recipients : User.all.reject { |u| u == discuss_current_user }
     end
-    helper_method :discuss_recipients
+    helper_method :recipients
 
     # For example `set_flash_message :notice, :trash_emptied`
     def set_flash_message(key, kind, options = {})
