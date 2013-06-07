@@ -36,6 +36,9 @@ module Discuss
     scope :drafts,  lambda { |user| by_user(user).active.draft.not_received }
     scope :trash,   lambda { |user| by_user(user).trashed.not_deleted }
 
+    scope :read,    lambda { |user| by_user(user).where('read_at is not NULL').received }
+    scope :unread,  lambda { |user| by_user(user).where('read_at is NULL').received }
+
     def active?
       !trashed? && !deleted?
     end
