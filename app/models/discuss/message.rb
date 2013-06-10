@@ -88,7 +88,7 @@ module Discuss
     end
 
     def read!
-      update(read_at: Time.zone.now)
+      update(read_at: Time.zone.now) unless self.read_at.present?
     end
 
     def trash!

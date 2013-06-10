@@ -8,6 +8,18 @@ module Discuss
       assert_equal 2, message.errors.count
     end
 
+    it 'is read! once' do
+      message = @sender.messages.create(body: 'lorem', recipients: [@recipient])
+      message.send!
+      received = Mailbox.new(@recipient).inbox.first
+      received.read!
+      assert received.read?
+
+      timestamp = received.read_at
+      received.read! # again
+      assert_equal timestamp, received.read_at, 'read_at timestamp should not change'
+    end
+
     context 'with users' do
       it 'should have a user' do
         message = @sender.messages.new
