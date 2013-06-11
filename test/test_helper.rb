@@ -40,6 +40,7 @@ class FeatureTest < MiniTest::Spec
   before(:each) do
     create_users
     bypass_user
+    bypass_recipients
   end
 
   after(:each) { restore_user }
@@ -65,4 +66,11 @@ end
 
 def restore_user
   Discuss::ApplicationController.send(:alias_method, :discuss_current_user, :old_user)
+end
+
+def bypass_recipients
+  discuss_recipients = User.all.reject { |u| u == @current_user }
+  Discuss::ApplicationController.send(:define_method, :recipients) do
+    discuss_recipients
+  end
 end

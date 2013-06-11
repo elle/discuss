@@ -9,7 +9,7 @@ module Discuss
     helper_method :discuss_current_user
 
     def recipients
-      discuss_recipients ? discuss_recipients : User.all.reject { |u| u == discuss_current_user }
+      discuss_recipients || User.all.reject { |u| u == discuss_current_user }
     end
     helper_method :recipients
 
