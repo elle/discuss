@@ -44,7 +44,11 @@ module Discuss
     end
 
     def sender
-      sent? ? user : parent.user
+      if sent?
+        user
+      else
+        parent ? parent.user : user
+      end
     end
 
     def recipients

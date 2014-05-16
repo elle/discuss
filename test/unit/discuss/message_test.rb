@@ -20,6 +20,18 @@ module Discuss
       assert_equal timestamp, received.read_at, 'read_at timestamp should not change'
     end
 
+
+    context "draft" do
+      it 'returns proper user depending if there are recipients' do
+        m = Message.new(body: 'abc', user_id: 1)
+        assert_equal m.unsent?, true
+        assert_equal m.sender, User.first
+
+        m.update(draft_recipient_ids: [2,3])
+        assert_equal m.sender, User.first
+      end
+    end
+
     context 'with users' do
       it 'should have a user' do
         message = @sender.messages.new
