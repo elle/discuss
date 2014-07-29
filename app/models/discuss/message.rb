@@ -5,11 +5,11 @@ module Discuss
     has_ancestry
 
     attr_accessor :draft
-    serialize :draft_recipient_ids, Array
+    serialize :draft_recipients, Array
 
-    belongs_to :user
+    belongs_to :user, polymorphic: true
 
-    validates :body, :user_id, presence: true
+    validates :body, :user, presence: true
     validate :lock_down_attributes, on: :update
 
     scope :ordered,      -> { order('created_at asc') }
@@ -30,7 +30,7 @@ module Discuss
     scope :deleted,      -> { where('deleted_at is not NULL') }
     scope :not_deleted,  -> { where('deleted_at is NULL') }
 
-    scope :by_user, lambda { |user| where(user_id: user.id) }
+    scope :by_user, lambda { |user| where(user: user) }
     scope :inbox,   lambda { |user| by_user(user).active.received }
     scope :outbox,  lambda { |user| by_user(user).active.sent }
     scope :drafts,  lambda { |user| by_user(user).active.draft.not_received }
@@ -56,11 +56,11 @@ module Discuss
     end
 
     def recipients= users
-      users.each { |u| draft_recipient_ids << u.id }
+      users.each { |u| draft_recipients << { type: u.class.to_s, id: u.id } }
     end
 
     def recipient_list
-      draft_recipient_ids.reject(&:blank?).map {|id| User.find id}
+      draft_recipients.reject(&:blank?).map { |user| user[:type].constantize.find user[:id] }
     end
 
     def mailbox

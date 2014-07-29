@@ -3,7 +3,7 @@ module Discuss
     module Discussable
       # Converts the model into discussable allowing it to interchange messages
       def acts_as_discussable
-        has_many :messages, class_name: 'Discuss::Message', foreign_key: 'user_id'
+        has_many :messages, class_name: 'Discuss::Message', as: :user
         include InstanceMethods
       end
 
