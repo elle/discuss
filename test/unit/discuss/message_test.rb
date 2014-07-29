@@ -23,11 +23,11 @@ module Discuss
 
     context "draft" do
       it 'returns proper user depending if there are recipients' do
-        m = Message.new(body: 'abc', user_id: 1)
+        m = Message.new(body: 'abc', user: User.first)
         assert_equal m.unsent?, true
         assert_equal m.sender, User.first
 
-        m.update(draft_recipient_ids: [2,3])
+        m.update(draft_recipients: User.find([2,3]))
         assert_equal m.sender, User.first
       end
     end
