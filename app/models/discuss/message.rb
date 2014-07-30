@@ -4,7 +4,7 @@ module Discuss
   class Message < ActiveRecord::Base
     has_ancestry
 
-    attr_accessor :draft
+    attr_accessor :draft, :draft_recipients
     serialize :draft_recipient_ids, Array
 
     belongs_to :user, polymorphic: true
@@ -55,12 +55,12 @@ module Discuss
       sent? ? children.collect(&:user) : parent.recipients
     end
 
-    def recipients= users
-      users.each { |u| draft_recipients << { type: u.class.to_s, id: u.id } }
+    def draft_recipients
+      self.draft_recipient_ids.map { |id| Discuss::RecipientSerializer.from_hash(id).recipient }
     end
 
-    def recipient_list
-      draft_recipients.reject(&:blank?).map { |user| user[:type].constantize.find user[:id] }
+    def draft_recipients= recipients
+      self.draft_recipient_ids = recipients.map { |r| Discuss::RecipientSerializer.new(r).to_hash }
     end
 
     def mailbox
@@ -85,7 +85,7 @@ module Discuss
         reply = children.create!(subject: options.fetch(:subject, subject),
                                  body: options.fetch(:body, nil),
                                  user: user,
-                                 recipients: [parent.user])
+                                 draft_recipients: [parent.user])
         reply.send!
       end
     end
