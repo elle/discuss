@@ -20,7 +20,7 @@ module Discuss
       end
 
       context 'with recipients' do
-        before { @message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient, @lisa]) }
+        before { @message = @sender.messages.create(body: 'lorem ipsum', draft_recipients: [@recipient, @lisa]) }
 
         it 'defaults to draft' do
           assert @message.unsent?
@@ -40,7 +40,7 @@ module Discuss
 
     context 'when sending' do
       before do
-        @message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient, @lisa])
+        @message = @sender.messages.create(body: 'lorem ipsum', draft_recipients: [@recipient, @lisa])
         @message.send!
       end
 
@@ -70,7 +70,7 @@ module Discuss
 
     context 'when trashed' do
       it 'still appears in the recipient inbox' do
-        message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient, @lisa])
+        message = @sender.messages.create(body: 'lorem ipsum', draft_recipients: [@recipient, @lisa])
         message.send!
         message.trash!
       end
@@ -78,7 +78,7 @@ module Discuss
 
     context 'when deleted' do
       before do
-        @message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient, @lisa])
+        @message = @sender.messages.create(body: 'lorem ipsum', draft_recipients: [@recipient, @lisa])
         @message.send!
 
         assert_equal 1, Message.inbox(@recipient).count

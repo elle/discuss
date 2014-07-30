@@ -36,8 +36,8 @@ class WorkFlowTest< FeatureTest
 
   context 'with messages' do
     before do
-      @draft = @sender.messages.create(body: 'only for me eyes', recipients: [@lisa])
-      @message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient])
+      @draft = @sender.messages.create(body: 'only for me eyes', draft_recipients: [@lisa])
+      @message = @sender.messages.create(body: 'lorem ipsum', draft_recipients: [@recipient])
       @message.send!
       @outbox = Discuss::Mailbox.new(@sender).outbox
     end
