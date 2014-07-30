@@ -5,7 +5,7 @@ module Discuss
     has_ancestry
 
     attr_accessor :draft
-    serialize :draft_recipients, Array
+    serialize :draft_recipient_ids, Array
 
     belongs_to :user, polymorphic: true
 

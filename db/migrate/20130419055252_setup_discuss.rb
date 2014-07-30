@@ -7,7 +7,7 @@ class SetupDiscuss < ActiveRecord::Migration
       t.integer     :user_id
       t.string      :user_type
       t.string      :ancestry
-      t.text        :draft_recipients
+      t.text        :draft_recipient_ids
       t.datetime    :sent_at
       t.datetime    :received_at
       t.datetime    :read_at
@@ -17,7 +17,7 @@ class SetupDiscuss < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :discuss_messages, :user_id
+    add_index :discuss_messages, [:user_type, :user_id]
     add_index :discuss_messages, :ancestry
   end
 end
