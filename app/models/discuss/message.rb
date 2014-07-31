@@ -4,7 +4,7 @@ module Discuss
   class Message < ActiveRecord::Base
     has_ancestry
 
-    attr_accessor :draft, :draft_recipients
+    attr_accessor :draft
     serialize :draft_recipient_ids, Array
 
     belongs_to :user, polymorphic: true
@@ -52,7 +52,13 @@ module Discuss
     end
 
     def recipients
-      sent? ? children.collect(&:user) : parent.recipients
+      if sent?
+        children.collect(&:user)
+      elsif parent.present?
+        parent.recipients
+      else
+        draft_recipients
+      end
     end
 
     def draft_recipients
