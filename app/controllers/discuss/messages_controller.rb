@@ -65,7 +65,9 @@ module Discuss
     helper_method :message
 
     def message_params
-      params.require(:message).permit(:subject, :body, :draft, draft_recipient_ids: [])
+      p = params.require(:message).permit(:subject, :body, :draft, draft_recipients: [])
+      p[:draft_recipients].reject!(&:blank?).map! { |json| recipient_from_json(json) } if p[:draft_recipients].present?
+      p
     end
 
     def send_message
@@ -88,6 +90,17 @@ module Discuss
 
     def mine?
       message.user == discuss_current_user
+    end
+
+    private
+
+    def recipient_json
+      ->(r) { Discuss::RecipientSerializer.new(r).to_hash.to_json }
+    end
+    helper_method :recipient_json
+
+    def recipient_from_json(json)
+      Discuss::RecipientSerializer.from_hash(JSON.parse(json)).recipient
     end
   end
 end
