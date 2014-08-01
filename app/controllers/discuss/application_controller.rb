@@ -10,7 +10,7 @@ module Discuss
     helper_method :discuss_current_user
 
     def recipients
-      discuss_recipients || recipient_objects.reject { |u| u == discuss_current_user }
+      (discuss_recipients || recipient_objects).reject { |u| u == discuss_current_user }
     end
     helper_method :recipients
 
