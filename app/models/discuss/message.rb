@@ -68,6 +68,7 @@ module Discuss
     def draft_recipients= recipients
       self.draft_recipient_ids = recipients.map { |r| Discuss::RecipientSerializer.new(r).to_hash }
     end
+    alias_method :recipients=, :draft_recipients=
 
     def mailbox
       case
