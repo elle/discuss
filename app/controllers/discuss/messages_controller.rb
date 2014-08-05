@@ -91,16 +91,5 @@ module Discuss
     def mine?
       message.user == discuss_current_user
     end
-
-    private
-
-    def recipient_json
-      ->(r) { Discuss::RecipientSerializer.new(r).to_hash.to_json }
-    end
-    helper_method :recipient_json
-
-    def recipient_from_json(json)
-      Discuss::RecipientSerializer.from_hash(JSON.parse(json)).recipient
-    end
   end
 end
