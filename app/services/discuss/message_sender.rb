@@ -6,7 +6,7 @@ class Discuss::MessageSender
 
   def initialize message
     @message = message
-    @recipients = message.recipient_list
+    @recipients = message.draft_recipients
   end
 
   def run
@@ -22,12 +22,12 @@ class Discuss::MessageSender
   def deliver!
     if recipients.any? && message.unsent?
       set_as_sent
-      recipients.each { |user| deliver_to user }
+      recipients.each { |recipient| deliver_to recipient }
     end
   end
 
-  def deliver_to user
-    attrs = {subject: subject, body: body, user: user, received_at: Time.zone.now, editable: false }
+  def deliver_to recipient
+    attrs = {subject: subject, body: body, user: recipient, received_at: Time.zone.now, editable: false }
     message.children.create(attrs)
   end
 end

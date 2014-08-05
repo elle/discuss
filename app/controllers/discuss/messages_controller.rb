@@ -65,7 +65,9 @@ module Discuss
     helper_method :message
 
     def message_params
-      params.require(:message).permit(:subject, :body, :draft, draft_recipient_ids: [])
+      p = params.require(:message).permit(:subject, :body, :draft, draft_recipients: [])
+      p[:draft_recipients].reject!(&:blank?).map! { |json| recipient_from_json(json) } if p[:draft_recipients].present?
+      p
     end
 
     def send_message
