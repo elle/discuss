@@ -12,7 +12,7 @@ module Discuss
     validates :body, :user, presence: true
     validate :lock_down_attributes, on: :update
 
-    scope :ordered,      -> { order('created_at asc') }
+    scope :ordered,      -> { order('created_at desc') }
     scope :active,       -> { not_trashed.not_deleted }
 
     scope :draft,        -> { where('sent_at is NULL') }
