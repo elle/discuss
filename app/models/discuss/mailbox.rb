@@ -8,20 +8,10 @@ module Discuss
       @user = user
     end
 
-    def inbox
-      Message.inbox(user)
-    end
-
-    def outbox
-      Message.outbox(user)
-    end
-
-    def drafts
-      Message.drafts(user)
-    end
-
-    def trash
-      Message.trash(user)
+    [:inbox, :outbox, :drafts, :trash].each do |mailbox|
+      define_method mailbox do
+        Message.ordered.send(mailbox, user)
+      end
     end
 
     def empty_trash!
