@@ -9,7 +9,7 @@ module Discuss
     end
 
     it 'is read! once' do
-      message = @sender.messages.create(body: 'lorem', recipients: [@recipient])
+      message = @sender.messages.create(body: 'lorem', draft_recipients: [@recipient])
       message.send!
       received = Mailbox.new(@recipient).inbox.first
       received.read!
@@ -23,11 +23,11 @@ module Discuss
 
     context "draft" do
       it 'returns proper user depending if there are recipients' do
-        m = Message.new(body: 'abc', user_id: 1)
+        m = Message.new(body: 'abc', user: User.first)
         assert_equal m.unsent?, true
         assert_equal m.sender, User.first
 
-        m.update(draft_recipient_ids: [2,3])
+        m.update(draft_recipients: User.find([2,3]))
         assert_equal m.sender, User.first
       end
     end
@@ -40,7 +40,7 @@ module Discuss
 
       context 'when sent' do
         before do
-          @message = @sender.messages.create(body: 'lorem', recipients: [@recipient])
+          @message = @sender.messages.create(body: 'lorem', draft_recipients: [@recipient])
           @message.send!
           refute @message.editable?
         end
@@ -81,7 +81,7 @@ module Discuss
       require 'thread'
 
       it 'can only be sent once' do
-        @message = @sender.messages.create(body: 'lorem', recipients: [@recipient])
+        @message = @sender.messages.create(body: 'lorem', draft_recipients: [@recipient])
 
         t1 = Thread.new { @message.send! }
         t2 = Thread.new { @message.send! }

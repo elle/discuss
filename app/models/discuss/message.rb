@@ -7,9 +7,9 @@ module Discuss
     attr_accessor :draft
     serialize :draft_recipient_ids, Array
 
-    belongs_to :user
+    belongs_to :user, polymorphic: true
 
-    validates :body, :user_id, presence: true
+    validates :body, :user, presence: true
     validate :lock_down_attributes, on: :update
 
     scope :ordered,      -> { order('created_at asc') }
@@ -30,7 +30,7 @@ module Discuss
     scope :deleted,      -> { where('deleted_at is not NULL') }
     scope :not_deleted,  -> { where('deleted_at is NULL') }
 
-    scope :by_user, lambda { |user| where(user_id: user.id) }
+    scope :by_user, lambda { |user| where(user: user) }
     scope :inbox,   lambda { |user| by_user(user).active.received }
     scope :outbox,  lambda { |user| by_user(user).active.sent }
     scope :drafts,  lambda { |user| by_user(user).active.draft.not_received }
@@ -52,16 +52,23 @@ module Discuss
     end
 
     def recipients
-      sent? ? children.collect(&:user) : parent.recipients
+      if sent?
+        children.collect(&:user)
+      elsif parent.present?
+        parent.recipients
+      else
+        draft_recipients
+      end
     end
 
-    def recipients= users
-      users.each { |u| draft_recipient_ids << u.id }
+    def draft_recipients
+      self.draft_recipient_ids.map { |id| Discuss::RecipientSerializer.from_hash(id).recipient }
     end
 
-    def recipient_list
-      draft_recipient_ids.reject(&:blank?).map {|id| User.find id}
+    def draft_recipients= recipients
+      self.draft_recipient_ids = recipients.map { |r| Discuss::RecipientSerializer.new(r).to_hash }
     end
+    alias_method :recipients=, :draft_recipients=
 
     def mailbox
       case
@@ -85,7 +92,7 @@ module Discuss
         reply = children.create!(subject: options.fetch(:subject, subject),
                                  body: options.fetch(:body, nil),
                                  user: user,
-                                 recipients: [parent.user])
+                                 draft_recipients: [parent.user])
         reply.send!
       end
     end
