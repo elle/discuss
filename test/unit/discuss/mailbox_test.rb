@@ -3,8 +3,8 @@ require 'test_helper'
 module Discuss
   class MailboxTest < MiniTest::Spec
     before do
-      @draft = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient])
-      @message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient])
+      @draft = @sender.messages.create(body: 'lorem ipsum', draft_recipients: [@recipient])
+      @message = @sender.messages.create(body: 'lorem ipsum', draft_recipients: [@recipient])
       @message.send!
     end
 

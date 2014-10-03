@@ -3,7 +3,7 @@ require 'test_helper'
 module Discuss
   class RecipientTest < MiniTest::Spec
     before do
-      @message = @sender.messages.create(body: 'lorem ipsum', recipients: [@recipient])
+      @message = @sender.messages.create(body: 'lorem ipsum', draft_recipients: [@recipient])
       @message.send!
       @received = Mailbox.new(@recipient).inbox.first
     end
