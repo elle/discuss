@@ -92,7 +92,8 @@ module Discuss
         reply = children.create!(subject: options.fetch(:subject, subject),
                                  body: options.fetch(:body, nil),
                                  user: user,
-                                 draft_recipients: [parent.user])
+                                 draft_recipients: [parent.user],
+                                 draft: draft)
         reply.send!
       end
     end
@@ -133,7 +134,7 @@ module Discuss
 
     # passed in from the compose form
     def draft?
-      self.draft == '1'
+      self.draft == true || self.draft == '1'
     end
 
     def sent_date

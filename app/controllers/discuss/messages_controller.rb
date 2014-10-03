@@ -16,6 +16,8 @@ module Discuss
 
     def create
       @message = Message.new(message_params.merge(user: discuss_current_user))
+      @message.draft = draft?
+
       if @message.save
         send_message
       else
@@ -27,8 +29,14 @@ module Discuss
     def reply
       @message = Message.find(params[:message_id])
       if params[:message][:body]
+        if @message.draft = draft?
+          set_flash_message :notice, :saved
+        else
+          set_flash_message :notice, :replied
+        end
+
         @message.reply! message_params.merge(user: discuss_current_user)
-        set_flash_message :notice, :replied
+
         redirect_to mailbox_path(:inbox)
       else
         set_flash_message :alert, :invalid
@@ -90,6 +98,10 @@ module Discuss
 
     def mine?
       message.user == discuss_current_user
+    end
+
+    def draft?
+      message_params["draft"] == "1"
     end
   end
 end
