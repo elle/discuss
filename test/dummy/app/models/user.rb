@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  has_many :messages, class_name: 'Discuss::Message'
+  acts_as_discussable
 
   validates :email, presence: true
 

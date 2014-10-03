@@ -1,7 +1,7 @@
 module Discuss
   module ApplicationHelper
     def message_person(mailbox_name, message)
-      mailbox_name == 'inbox' ? message.sender : message.recipient_list.join(', ')
+      mailbox_name == 'inbox' ? message.sender : message.recipients.join(', ')
     end
 
     def markdown(text)

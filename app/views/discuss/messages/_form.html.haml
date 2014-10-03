@@ -7,7 +7,7 @@
       - if @message.errors.any?
         %p.errors This message has #{pluralize(@message.errors.count, 'error')}
 
-      = f.input :draft_recipient_ids, collection: recipients, input_html: {class: 'chosen', multiple: true}, label: 'Recipients'
+      = f.input :draft_recipients, collection: recipients, value_method: lambda { |r| recipient_json(r) }, input_html: {class: 'chosen', multiple: true}, label: 'Recipients', selected: f.object.draft_recipients.map { |r| recipient_json(r) }
       = f.input :subject
       = f.input :body, required: false, label: 'Your message'
       = f.input :draft, as: :boolean
