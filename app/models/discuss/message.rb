@@ -134,7 +134,7 @@ module Discuss
 
     # passed in from the compose form
     def draft?
-      self.draft
+      self.draft == true || self.draft == '1'
     end
 
     def sent_date
