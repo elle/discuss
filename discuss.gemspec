@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.name        = 'discuss'
   s.version     = Discuss::VERSION
   s.authors     = ['Elle Meredith', 'Garrett Heinlen']
-  s.email       = ['elle.meredith@blake.com.au']
+  s.email       = ['ellemeredith@gmail.com']
   s.homepage    = 'http://github.com/elle/discuss'
   s.summary     = 'Messaging engine'
   s.description = 'Messaging engine'
