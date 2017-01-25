@@ -10,3 +10,6 @@ test/dummy/log/*.log
 test/dummy/tmp/
 test/dummy/db/schema.rb
 test/dummy/.sass-cache
+test/dummy/config/initializers/simple_form.rb
+test/dummy/config/locales/simple_form.en.yml
+test/dummy/lib/templates/erb/scaffold/_form.html.erb
