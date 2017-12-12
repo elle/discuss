@@ -16,14 +16,9 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
 
-  s.add_dependency 'rails',         '~> 4.0.0.rc1'
-  s.add_dependency 'ancestry',      '~> 2.0.0.rc1'
-  s.add_dependency 'haml',          '~> 4.0'
-  s.add_dependency 'redcarpet',     '~> 1.0'
-  s.add_dependency 'simple_form'
-
-  s.add_development_dependency 'capybara'
-  s.add_development_dependency 'debugger'
-  s.add_development_dependency 'sqlite3'
-  s.add_development_dependency 'minitest-reporters'
+  s.add_dependency 'rails',       '~> 4.0.13'
+  s.add_dependency 'ancestry',    '~> 3.0.0'
+  s.add_dependency 'haml',        '~> 5.0.4'
+  s.add_dependency 'redcarpet',   '~> 3.4.0'
+  s.add_dependency 'simple_form', '~> 3.5.0'
 end
