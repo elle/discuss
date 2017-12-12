@@ -5,7 +5,9 @@ module Discuss
     end
 
     def markdown(text)
-      Redcarpet.new(text).to_html.html_safe
+      html = Redcarpet::Render::HTML.new({})
+      markdown = ::Redcarpet::Markdown.new(html)
+      markdown.render(text).html_safe
     end
   end
 end
