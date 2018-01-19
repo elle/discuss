@@ -4,7 +4,7 @@ class SetupDiscuss < ActiveRecord::Migration
     create_table :discuss_messages do |t|
       t.string      :subject
       t.text        :body
-      t.integer     :user_id
+      t.integer     :user_id, null: false
       t.string      :user_type
       t.string      :ancestry
       t.text        :draft_recipient_ids
@@ -15,7 +15,7 @@ class SetupDiscuss < ActiveRecord::Migration
       t.datetime    :deleted_at
       t.boolean     :editable, default: true
 
-      t.timestamps
+      t.timestamps null: false
     end
     add_index :discuss_messages, [:user_type, :user_id]
     add_index :discuss_messages, :ancestry

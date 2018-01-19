@@ -16,8 +16,4 @@ gem 'jquery-rails'
 # To use debugger
 group :test do
   gem 'awesome_print'
-  gem 'capybara'
-  gem 'database_cleaner'
-  gem 'minitest-reporters'
-  gem 'sqlite3'
 end
