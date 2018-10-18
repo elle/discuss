@@ -1,4 +1,4 @@
-# Configure Rails Environment
+require 'simplecov' if ENV['COVERAGE'] != 'off'
 ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../dummy/config/environment.rb', __FILE__)
 
