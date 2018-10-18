@@ -16,4 +16,5 @@ gem 'jquery-rails'
 # To use debugger
 group :test do
   gem 'awesome_print'
+  gem 'simplecov', require: false
 end
