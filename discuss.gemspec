@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'redcarpet',     '~> 3.4.0'
   s.add_dependency 'simple_form',   '~> 3.5.0'
 
-  s.add_development_dependency 'capybara'
+  s.add_development_dependency 'capybara', '~> 2.18.0'
   s.add_development_dependency 'database_cleaner'
   s.add_development_dependency 'minitest-reporters'
   s.add_development_dependency 'pry-byebug'
