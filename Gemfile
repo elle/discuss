@@ -17,4 +17,6 @@ gem 'jquery-rails'
 group :test do
   gem 'awesome_print'
   gem 'simplecov', require: false
+  gem 'sqlite3', "~> 1.3.6"
+  gem 'pry'
 end
