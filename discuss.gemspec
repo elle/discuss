@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'ancestry',      '~> 3.0.0'
   s.add_dependency 'haml',          '~> 5.0.4'
   s.add_dependency 'redcarpet',     '~> 3.4.0'
-  s.add_dependency 'simple_form',   '~> 3.5.0'
+  s.add_dependency 'simple_form',   '~> 4.1.0'
 
   s.add_development_dependency 'capybara', '~> 2.18.0'
   s.add_development_dependency 'database_cleaner'
