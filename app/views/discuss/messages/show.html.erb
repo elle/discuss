@@ -1,0 +1,36 @@
+<section id="discuss" class="<%= mailbox_name %>">
+  <h2>
+    <%= mailbox_name.humanize %>
+  </h2>
+  <%= render 'discuss/shared/nav' %>
+  <div class="message">
+    <ul class="headers">
+      <li class="subject">Subject: <%= message.try(:subject) %></li>
+      <li class="sender">Sender: <%= message.sender %></li>
+      <li class="sent_at">Date: <%= message.sent_date.to_date %></li>
+      <% # Do we want recipient names to be links? or have any data attributes like the user.id? %>
+      <li class="recipients">Recipients: <%= message.recipients.join(', ') %></li>
+    </ul>
+    <div class="body">
+      <%= markdown(message.body) %>
+    </div>
+    <% unless message.trashed? %>
+      <div class="move_to_trash">
+        <%= simple_form_for @message, url: message_trash_path(@message), method: :post do |f| %>
+          <%= f.submit 'Move to trash' %>
+        <% end %>
+      </div>
+    <% end %>
+    <% if message.received? %>
+      <div class="compose reply">
+        <h3>Reply</h3>
+        <%= simple_form_for @message, url: message_reply_path(@message), method: :post do |f| %>
+          <%= f.input :subject, input_html: { value: "Re: #{@message.subject}" } %>
+          <%= f.input :body, required: false, label: 'Your message', input_html: { value: '' } %>
+          <%= f.input :draft, as: :boolean %>
+          <%= f.submit 'Reply' %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</section>

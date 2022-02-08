@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails',         '>= 5.0.0', '< 7.0.0'
 
   s.add_dependency 'ancestry',      '~> 3.0.0'
-  s.add_dependency 'haml',          '~> 5.0.4'
   s.add_dependency 'redcarpet',     '~> 3.4.0'
   s.add_dependency 'simple_form',   '~> 4.1.0'
 
