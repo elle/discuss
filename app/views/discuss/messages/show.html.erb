@@ -6,7 +6,7 @@
   <div class="message">
     <ul class="headers">
       <li class="subject">Subject: <%= message.try(:subject) %></li>
-      <li class="sender">Sender: <%= message.sender %></li>
+      <li class="sender">Sender: <%= message.sender.prefix %></li>
       <li class="sent_at">Date: <%= message.sent_date.to_date %></li>
       <% # Do we want recipient names to be links? or have any data attributes like the user.id? %>
       <li class="recipients">Recipients: <%= message.recipients.join(', ') %></li>

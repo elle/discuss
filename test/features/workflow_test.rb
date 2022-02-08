@@ -106,7 +106,7 @@ class WorkFlowTest< FeatureTest
       visit "/discuss/message/#{@message.id}"
 
       within '.headers' do
-        assert page.has_content?(@message.sender)
+        assert page.has_content?(@message.sender.email)
         assert page.has_content?('Recipients: bart simpsons')
       end
     end
