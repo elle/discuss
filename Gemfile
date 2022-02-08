@@ -1,9 +1,9 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 # Declare your gem's dependencies in discuss.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
 # development dependencies will be added by default to the :development group.
-gemspec
+gemspec path: '.'
 
 # Declare any dependencies that are still in development here instead of in
 # your gemspec. These might include edge Rails or gems from your path or
@@ -13,10 +13,14 @@ gemspec
 gem 'coffee-rails'
 gem 'jquery-rails'
 
+gem 'sprockets', '< 4.0'
+
 # To use debugger
 group :test do
-  gem 'awesome_print'
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem 'minitest-reporters'
+  gem 'pry-byebug'
   gem 'simplecov', require: false
-  gem 'sqlite3', "~> 1.3.6"
-  gem 'pry'
+  gem 'sqlite3'
 end

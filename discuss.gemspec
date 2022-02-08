@@ -19,12 +19,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails',         '>= 5.0.0', '< 7.0.0'
 
   s.add_dependency 'ancestry',      '~> 3.0.0'
-  s.add_dependency 'redcarpet',     '~> 3.4.0'
+  s.add_dependency 'redcarpet',     '~> 3.5.0'
   s.add_dependency 'simple_form',   '~> 4.1.0'
-
-  s.add_development_dependency 'capybara'
-  s.add_development_dependency 'database_cleaner'
-  s.add_development_dependency 'minitest-reporters'
-  s.add_development_dependency 'pry-byebug'
-  s.add_development_dependency 'sqlite3'
 end
