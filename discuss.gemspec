@@ -16,14 +16,14 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
 
-  s.add_dependency 'rails',         '>= 4.2.0', '< 6.0.0'
+  s.add_dependency 'rails',         '>= 5.0.0', '< 7.0.0'
 
   s.add_dependency 'ancestry',      '~> 3.0.0'
   s.add_dependency 'haml',          '~> 5.0.4'
   s.add_dependency 'redcarpet',     '~> 3.4.0'
   s.add_dependency 'simple_form',   '~> 4.1.0'
 
-  s.add_development_dependency 'capybara', '~> 2.18.0'
+  s.add_development_dependency 'capybara'
   s.add_development_dependency 'database_cleaner'
   s.add_development_dependency 'minitest-reporters'
   s.add_development_dependency 'pry-byebug'
