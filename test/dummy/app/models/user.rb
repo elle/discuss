@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   end
 
   def full_name
-    "#{try(:first_name)} #{try(:last_name)}"
+    [first_name, last_name].compact.join(' ')
   end
 
   def prefix
