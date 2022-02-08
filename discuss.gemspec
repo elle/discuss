@@ -18,7 +18,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails',         '>= 5.0.0', '< 7.0.0'
 
-  s.add_dependency 'ancestry',      '~> 3.0.0'
-  s.add_dependency 'redcarpet',     '~> 3.5.0'
-  s.add_dependency 'simple_form',   '~> 4.1.0'
+  s.add_dependency 'ancestry',      '~> 4.0' # message model
+  s.add_dependency 'jquery-rails',  '>= 4.4'
+  s.add_dependency 'redcarpet',     '~> 3.5'
+  s.add_dependency 'simple_form',   '~> 4.1'
+  s.add_dependency 'sprockets',     '>= 2.0.0', '< 4.0.0'
 end
