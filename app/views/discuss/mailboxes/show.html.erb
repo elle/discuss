@@ -11,7 +11,7 @@
       <table>
         <tbody>
           <% @messages.each do |message| %>
-            <tr class="message">
+            <tr class="discuss_message">
               <td class="user">
                 <%= link_to message_person(mailbox_name, message), mailbox_message_path(message.mailbox, message) %>
               </td>
