@@ -1,5 +1,4 @@
 require 'ancestry'
-require 'haml'
 require 'simple_form'
 
 module Discuss
