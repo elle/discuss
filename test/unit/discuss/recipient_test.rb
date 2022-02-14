@@ -49,7 +49,6 @@ module Discuss
         last_message = Message.last
         assert_equal 3, last_message.ancestors.count
         assert_equal @message, last_message.root
-        # ap Message.all.collect &:ancestry
       end
     end
   end

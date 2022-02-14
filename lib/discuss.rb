@@ -1,3 +1,4 @@
+require 'redcarpet'
 require 'discuss/engine'
 require 'discuss/models/discussable'
 

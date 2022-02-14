@@ -1,0 +1,36 @@
+<section id="discuss" class="mailboxes <%= mailbox_name %>">
+  <h2>
+    <%= mailbox_name.humanize %>
+  </h2>
+  <div class="summary">
+    <%= pluralize(@messages.size, 'message') %>
+  </div>
+  <%= render 'discuss/shared/nav' %>
+  <section class="messages">
+    <% if @messages.any? %>
+      <table>
+        <tbody>
+          <% @messages.each do |message| %>
+            <tr class="discuss_message">
+              <td class="user">
+                <%= link_to message_person(mailbox_name, message), mailbox_message_path(message.mailbox, message) %>
+              </td>
+              <td class="preview">
+                <%= link_to message.try(:subject), mailbox_message_path(message.mailbox, message) %>
+                <%= link_to truncate(message.body, length: 50), mailbox_message_path(message.mailbox, message) %>
+              </td>
+              <td class="sent_at">
+                <%= message.created_at.to_date %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <% if mailbox_name == 'trash' %>
+        <%= form_tag empty_trash_path do %>
+          <%= submit_tag 'Empty trash' %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </section>
+</section>

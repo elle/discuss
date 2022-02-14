@@ -1,4 +1,3 @@
 Rails.application.routes.draw do
-
-  mount Discuss::Engine => "/discuss"
+  mount Discuss::Engine => '/discuss'
 end
