@@ -1,6 +1,18 @@
 require 'thread'
 
 module Discuss
+  # You can override the inbox scope like so:
+  #
+  #     Discuss::Message.inbox_scope = -> (messages, user) {
+  #       messages.by_user(user).active.received.my_filter
+  #     }
+  #
+  # It defaults to:
+  #
+  #     -> (messages, user) {
+  #       messages.by_user(user).active.received
+  #     }
+  #
   class Message < Discuss.model_base
     has_ancestry
 
@@ -31,19 +43,20 @@ module Discuss
     scope :not_deleted,  -> { where('deleted_at is NULL') }
 
     scope :by_user, -> (user) { where(user: user) }
-    scope :inbox,   -> (user) {
-      if respond_to?(:custom_inbox)
-        custom_inbox(user)
-      else
-        by_user(user).active.received
-      end
-    }
+    scope :inbox,   -> (user) { ::Discuss::Message.inbox_scope(self, user) }
     scope :outbox,  -> (user) { by_user(user).active.sent }
     scope :drafts,  -> (user) { by_user(user).active.draft.not_received }
     scope :trash,   -> (user) { by_user(user).trashed.not_deleted }
 
     scope :read,    -> (user) { by_user(user).where('read_at is not NULL').received }
     scope :unread,  -> (user) { by_user(user).where('read_at is NULL').received }
+
+    class << self
+      attr_accessor :inbox_scope
+    end
+
+    # Allow this to be overridden
+    self.inbox_scope = -> (messages, user) { messages.by_user(user).active.received }
 
     def active?
       !trashed? && !deleted?
