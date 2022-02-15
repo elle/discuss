@@ -1,7 +1,7 @@
 require 'thread'
 
 module Discuss
-  class Message < ActiveRecord::Base
+  class Message < Discuss.model_base
     has_ancestry
 
     attr_accessor :draft
@@ -30,14 +30,20 @@ module Discuss
     scope :deleted,      -> { where('deleted_at is not NULL') }
     scope :not_deleted,  -> { where('deleted_at is NULL') }
 
-    scope :by_user, lambda { |user| where(user: user) }
-    scope :inbox,   lambda { |user| by_user(user).active.received }
-    scope :outbox,  lambda { |user| by_user(user).active.sent }
-    scope :drafts,  lambda { |user| by_user(user).active.draft.not_received }
-    scope :trash,   lambda { |user| by_user(user).trashed.not_deleted }
+    scope :by_user, -> (user) { where(user: user) }
+    scope :inbox,   -> (user) {
+      if respond_to?(:custom_inbox)
+        custom_inbox(user)
+      else
+        by_user(user).active.received
+      end
+    }
+    scope :outbox,  -> (user) { by_user(user).active.sent }
+    scope :drafts,  -> (user) { by_user(user).active.draft.not_received }
+    scope :trash,   -> (user) { by_user(user).trashed.not_deleted }
 
-    scope :read,    lambda { |user| by_user(user).where('read_at is not NULL').received }
-    scope :unread,  lambda { |user| by_user(user).where('read_at is NULL').received }
+    scope :read,    -> (user) { by_user(user).where('read_at is not NULL').received }
+    scope :unread,  -> (user) { by_user(user).where('read_at is NULL').received }
 
     def active?
       !trashed? && !deleted?
