@@ -43,7 +43,7 @@ module Discuss
     scope :not_deleted,  -> { where('deleted_at is NULL') }
 
     scope :by_user, -> (user) { where(user: user) }
-    scope :inbox,   -> (user) { ::Discuss::Message.inbox_scope(self, user) }
+    scope :inbox,   -> (user) { ::Discuss::Message.inbox_scope.call(self, user) }
     scope :outbox,  -> (user) { by_user(user).active.sent }
     scope :drafts,  -> (user) { by_user(user).active.draft.not_received }
     scope :trash,   -> (user) { by_user(user).trashed.not_deleted }
