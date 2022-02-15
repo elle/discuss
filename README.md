@@ -47,13 +47,12 @@ Define a `current_user` in your `application_controller.rb`:
 
 ```ruby
 class ApplicationController < ActionController::Base
-    # ...
+  # ...
 
-    private
+  private
 
-    def current_user
-      # Your own implementation
-    end
+  def current_user
+    # Your own implementation
   end
 end
 ```
