@@ -27,7 +27,7 @@ module Discuss
     end
 
     def recipient_classes
-      ActiveRecord::Base.descendants.select { |c| c.included_modules.include? Discuss::Models::Discussable }
+      Discuss.model_base.descendants.select { |c| c.included_modules.include? Discuss::Models::Discussable }
     end
 
     def recipient_json(r)

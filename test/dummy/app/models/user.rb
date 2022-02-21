@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  include Discuss::Models::Discussable
 
   acts_as_discussable
 
