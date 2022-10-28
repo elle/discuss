@@ -145,9 +145,8 @@ rails generate discuss:views
 ## Running the tests
 
 ```shell
-rake db:create && rake db:migrate
-rake db:migrate RAILS_ENV=test
-rake test
+RAILS_ENV=test bundle exec rake db:drop db:create db:schema:load 
+bundle exec rake test
 ```
 
 ## TODO
