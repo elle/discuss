@@ -32,11 +32,11 @@ class XssTest< FeatureTest
     end
   end
 
-  context 'with malicious img in body' do
-    let(:body) { '<img src="/logout" />' }
+  context 'with malicious img markdown in body' do
+    let(:body) { '![Alt text](/logout)' }
 
     it "message page doesn't logout" do
-      pending "can't test because html_escaping blocks images and capybara doesn't load images triggering the logout"
+      # capybara doesn't load images triggering the logout, so can't test that, just that it's in the DOM
       visit "/discuss/message/#{@message.id}"
 
       within '.body' do
