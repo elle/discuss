@@ -22,6 +22,7 @@ class XssTest< FeatureTest
       end
     end
 
+    # never a vulnerability here, without markdown processing it was always blocked by Rails
     it "mailbox page doesn't do bad things" do
       visit "/discuss/mailbox/inbox"
 
@@ -31,15 +32,15 @@ class XssTest< FeatureTest
     end
   end
 
-  context 'with malicious iframe in body' do
-    let(:body) { "<iframe/oNloAd=alert('XSS')//>\x3e" }
+  context 'with malicious img in body' do
+    let(:body) { '<img src="/logout" />' }
 
-    # never a vulnerability here, without markdown processing it was always blocked by Rails
-    it "message page doesn't do bad things" do
+    it "message page doesn't logout" do
+      pending "can't test because html_escaping blocks images and capybara doesn't load images triggering the logout"
       visit "/discuss/message/#{@message.id}"
 
       within '.body' do
-        refute page.has_css?('iframe')
+        refute page.has_css?('img')
       end
     end
   end
