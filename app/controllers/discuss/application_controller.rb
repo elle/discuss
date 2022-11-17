@@ -20,6 +20,10 @@ module Discuss
       flash[key] = message if message.present?
     end
 
+    def shared_root_path
+      main_app.root_path
+    end
+
     private
 
     def recipient_objects
