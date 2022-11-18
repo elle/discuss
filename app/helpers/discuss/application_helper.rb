@@ -5,8 +5,8 @@ module Discuss
     end
 
     def markdown(text)
-      html = Redcarpet::Render::HTML.new(escape_html: true, safe_links_only: true, no_images: true)
-      markdown = ::Redcarpet::Markdown.new(html)
+      html = Redcarpet::Render::Safe.new(no_images: true, no_styles: true, hard_wrap: true)
+      markdown = ::Redcarpet::Markdown.new(html, footnotes: true)
       markdown.render(text).html_safe
     end
   end
