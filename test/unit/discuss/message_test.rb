@@ -4,12 +4,14 @@ module Discuss
   class MessageTest < MiniTest::Spec
     it 'must have body and recipients' do
       message = Message.new()
+
       refute message.valid?
       assert_equal 2, message.errors.count
     end
 
     it "cannot have a body longer than 1200 chars" do
       message = @sender.messages.create(body: 'lorem ipsum ' * 101, draft_recipients: [@recipient])
+
       refute message.valid?
       refute_empty message.errors[:body]
     end
