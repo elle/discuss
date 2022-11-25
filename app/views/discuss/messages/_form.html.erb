@@ -15,7 +15,8 @@
         label: 'Recipients',
         selected: f.object.draft_recipients.map { |r| recipient_json(r) } %>
       <%= f.input :subject %>
-      <%= f.input :body, required: false, label: 'Your message' %>
+      <%= f.input :body, required: false, label: 'Your message', maxlength: Discuss.maximum_message_body_chars %>
+      <p class="small">Maximum message length <%= Discuss.maximum_message_body_chars %> characters.</p>
       <%= f.input :draft, as: :boolean %>
       <%= f.submit 'Send message' %>
     <% end %>

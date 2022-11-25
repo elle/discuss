@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class WorkFlowTest< FeatureTest
-
   it 'seeing an empty inbox' do
     visit "/discuss/mailbox/inbox" # discuss.mailbox_path(:inbox)
     assert page.has_content?('Inbox')
@@ -27,10 +26,28 @@ class WorkFlowTest< FeatureTest
       select 'bart simpsons', from: 'Recipients'
       fill_in 'Subject', with: 'camping trip'
       fill_in 'Your message', with: "who's bringing what?"
+
+      assert page.has_selector?("textarea#message_body[maxlength='#{Discuss.maximum_message_body_chars}']")
+      assert page.has_content?("Maximum message length #{Discuss.maximum_message_body_chars} characters.")
+
       click_on 'Send message'
+
       assert page.has_css?('div.notice')
       assert_equal 1, Discuss::Mailbox.new(@sender).outbox.count
       assert_equal 1, Discuss::Mailbox.new(@recipient).inbox.count
+    end
+
+    it 'does not send an overly long message' do
+      visit '/discuss/message/compose'
+      select 'bart simpsons', from: 'Recipients'
+      fill_in 'Subject', with: 'camping trip'
+      fill_in 'Your message', with: "lorem ipsum " * 91
+      click_on 'Send message'
+
+      assert page.has_css?('p.errors')
+      assert page.has_css?('.message_body.field_with_errors')
+      assert_equal 0, Discuss::Mailbox.new(@sender).outbox.count
+      assert_equal 0, Discuss::Mailbox.new(@recipient).inbox.count
     end
   end
 

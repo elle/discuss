@@ -36,12 +36,26 @@ module Discuss
     #
     attr_writer :inbox_scope
 
+    # Override the default char limit on message length:
+    #
+    #     Discuss.maximum_message_body_chars = 2000
+    #
+    # The default value is:
+    #
+    #     Discuss.maximum_message_body_chars = 1200
+    #
+    attr_writer :maximum_message_body_chars
+
     def model_base
       defined?(@model_base) ? @model_base : ActiveRecord::Base
     end
 
     def inbox_scope
       defined?(@inbox_scope) ? @inbox_scope : -> (messages, user) { messages.by_user(user).active.received }
+    end
+
+    def maximum_message_body_chars
+      defined?(@maximum_message_body_chars) ? @maximum_message_body_chars : 1200
     end
   end
 end
