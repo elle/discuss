@@ -10,6 +10,7 @@ module Discuss
     belongs_to :user, polymorphic: true
 
     validates :body, :user, presence: true
+    validates :subject, length: { maximum: 255 }
     validates :body, length: { maximum: Discuss.maximum_message_body_chars }
     validate :lock_down_attributes, on: :update
 

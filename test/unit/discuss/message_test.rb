@@ -16,6 +16,13 @@ module Discuss
       refute_empty message.errors[:body]
     end
 
+    it "cannot have a subject longer than 255 chars" do
+      message = @sender.messages.create(subject: 'x' * 256, body: 'lorem ipsum ', draft_recipients: [@recipient])
+
+      refute message.valid?
+      refute_empty message.errors[:subject]
+    end
+
     it 'is read! once' do
       message = @sender.messages.create(body: 'lorem', draft_recipients: [@recipient])
       message.send!
